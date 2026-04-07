@@ -15,6 +15,7 @@ class Paciente(models.Model):
     apellido = models.CharField('Apellido', max_length=100)
     fecha_nacimiento = models.DateField('Fecha de nacimiento')
     nombre_acudiente = models.CharField('Nombre del acudiente', max_length=200)
+    telefono_acudiente = models.CharField('Teléfono de contacto', max_length=20, default='')
     parentesco = models.CharField(
         'Parentesco', max_length=20, choices=PARENTESCO_CHOICES, default='madre'
     )

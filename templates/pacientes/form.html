@@ -148,6 +148,23 @@
                         {% endif %}
                     </div>
                 </div>
+
+                <div class="field-row">
+                    <div class="form-group">
+                        <label for="id_telefono_acudiente">Teléfono de contacto <span class="required">*</span></label>
+                        <div class="input-wrapper">
+                            <i class="fas fa-phone"></i>
+                            <input type="tel" name="telefono_acudiente" id="id_telefono_acudiente"
+                                class="form-control {% if form.telefono_acudiente.errors %}is-invalid{% endif %}"
+                                placeholder="Ej: 3001234567"
+                                value="{{ form.telefono_acudiente.value|default:'' }}"
+                                autocomplete="off" required>
+                        </div>
+                        {% if form.telefono_acudiente.errors %}
+                            <div class="field-error">{{ form.telefono_acudiente.errors.0 }}</div>
+                        {% endif %}
+                    </div>
+                </div>
             </div>
 
             <div class="form-actions">

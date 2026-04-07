@@ -10,11 +10,12 @@ class PacienteForm(forms.ModelForm):
 
     class Meta:
         model = Paciente
-        fields = ['nombre', 'apellido', 'fecha_nacimiento', 'nombre_acudiente', 'parentesco']
+        fields = ['nombre', 'apellido', 'fecha_nacimiento', 'nombre_acudiente', 'telefono_acudiente', 'parentesco']
         labels = {
             'nombre': 'Nombre',
             'apellido': 'Apellido',
             'nombre_acudiente': 'Nombre del acudiente',
+            'telefono_acudiente': 'Teléfono de contacto',
             'parentesco': 'Parentesco',
         }
 
