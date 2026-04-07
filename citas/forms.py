@@ -36,14 +36,16 @@ class CitaForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
         self.fields['paciente'].queryset = Paciente.objects.order_by('apellido', 'nombre')
         self.fields['paciente'].empty_label = '— Selecciona un paciente —'
+        # Fecha desde URL (nueva cita): viene yyyy-mm-dd → convertir a dd/mm/aaaa
         if fecha:
-            # fecha viene como yyyy-mm-dd desde la URL, convertir a dd/mm/aaaa
             try:
-                from datetime import date
                 parts = fecha.split('-')
-                self.fields['fecha'].initial = f'{parts[2]}/{parts[1]}/{parts[0]}'
+                self.initial['fecha'] = f'{parts[2]}/{parts[1]}/{parts[0]}'
             except Exception:
-                self.fields['fecha'].initial = fecha
+                self.initial['fecha'] = fecha
+        # Fecha desde instancia (edición): date object → dd/mm/aaaa
+        elif self.instance and self.instance.pk and self.instance.fecha:
+            self.initial['fecha'] = self.instance.fecha.strftime('%d/%m/%Y')
         if hora:
             self.fields['hora'].initial = hora
 

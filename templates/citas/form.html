@@ -85,7 +85,7 @@
                             <input type="text" name="fecha" id="id_fecha"
                                 class="form-control date-mask {% if form.fecha.errors %}is-invalid{% endif %}"
                                 placeholder="dd/mm/aaaa"
-                                value="{{ form.fecha.value|date:'d/m/Y'|default:'' }}"
+                                value="{{ form.fecha.value|default:'' }}"
                                 maxlength="10" autocomplete="off" required>
                         </div>
                         {% if form.fecha.errors %}
