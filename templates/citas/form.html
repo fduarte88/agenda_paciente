@@ -84,7 +84,7 @@
                             <i class="fas fa-calendar-days"></i>
                             <input type="date" name="fecha" id="id_fecha"
                                 class="form-control {% if form.fecha.errors %}is-invalid{% endif %}"
-                                value="{{ form.fecha.value|default:fecha }}" required>
+                                value="{{ form.fecha.value|default:'' }}" required>
                         </div>
                         {% if form.fecha.errors %}
                             <div class="field-error">{{ form.fecha.errors.0 }}</div>
@@ -99,7 +99,7 @@
                                 class="form-control form-select {% if form.hora.errors %}is-invalid{% endif %}">
                                 {% for value, label in form.fields.hora.choices %}
                                     <option value="{{ value }}"
-                                        {% if form.hora.value == value or hora == value %}selected{% endif %}>
+                                        {% if form.hora.value == value %}selected{% endif %}>
                                         {{ label }}
                                     </option>
                                 {% endfor %}
