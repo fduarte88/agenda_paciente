@@ -268,7 +268,7 @@
                         <th class="th-hora col-hora">Hora</th>
                         {% for dia in dias %}
                         <th class="th-dia {% if dia == hoy %}hoy{% endif %}">
-                            <div class="dia-nombre">{{ dias_nombres|slice:forloop.counter0|last }}</div>
+                            <div class="dia-nombre">{{ dias_nombres|slice:forloop.counter|last }}</div>
                             <div class="dia-num">{{ dia|date:"d" }}</div>
                             <div class="dia-mes">{{ dia|date:"M" }}</div>
                         </th>
