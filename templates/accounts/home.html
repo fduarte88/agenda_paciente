@@ -117,15 +117,64 @@
     <div class="section-card">
         <div class="section-card-header">
             <h3><i class="fas fa-calendar-check"></i> Próximas Citas</h3>
-            <a href="#" class="btn-sm">
+            <a href="{% url 'cita_nueva' %}" class="btn-sm">
                 <i class="fas fa-plus"></i> Nueva
             </a>
         </div>
         <div class="appointment-list">
-            <div class="empty-state">
-                <i class="fas fa-calendar-xmark"></i>
-                No hay citas programadas por el momento
-            </div>
+            {% if proximas_citas %}
+                {% for cita in proximas_citas %}
+                <div class="appointment-item">
+                    <div class="appt-time">
+                        <span class="time">{{ cita.hora }}</span>
+                        <span class="date">
+                            {% if cita.fecha == hoy %}Hoy{% else %}{{ cita.fecha|date:"d/m/Y" }}{% endif %}
+                        </span>
+                    </div>
+                    <div class="appt-info">
+                        <div class="patient-name">{{ cita.paciente.apellido }}, {{ cita.paciente.nombre }}</div>
+                        <div class="service">{{ cita.fecha|date:"l d/m/Y" }}</div>
+                    </div>
+                    <div style="display:flex;align-items:center;gap:.5rem;flex-shrink:0;">
+                        {% if cita.estado == 'pendiente' %}
+                            <form method="post" action="{% url 'cita_confirmar' cita.pk %}" style="margin:0;">
+                                {% csrf_token %}
+                                <input type="hidden" name="next" value="{% url 'home' %}">
+                                <button type="submit" class="btn-accion btn-confirmar" title="Confirmar cita">
+                                    <i class="fas fa-check"></i> Confirmar
+                                </button>
+                            </form>
+                            <form method="post" action="{% url 'cita_cancelar' cita.pk %}" style="margin:0;"
+                                onsubmit="return confirm('¿Eliminar la cita de {{ cita.paciente.nombre }}? El turno quedará libre.')">
+                                {% csrf_token %}
+                                <input type="hidden" name="next" value="{% url 'home' %}">
+                                <button type="submit" class="btn-accion btn-cancelar" title="Cancelar y liberar turno">
+                                    <i class="fas fa-xmark"></i> Cancelar
+                                </button>
+                            </form>
+                        {% else %}
+                            <span class="badge badge-{% if cita.estado == 'confirmada' %}confirmed{% else %}cancelled{% endif %}">
+                                {% if cita.estado == 'confirmada' %}
+                                    <i class="fas fa-circle-check"></i> Confirmada
+                                {% else %}
+                                    <i class="fas fa-circle-xmark"></i> Cancelada
+                                {% endif %}
+                            </span>
+                        {% endif %}
+                    </div>
+                </div>
+                {% endfor %}
+                <div style="padding:.6rem 1.25rem;text-align:right;border-top:1px solid var(--border);">
+                    <a href="{% url 'agenda' %}" style="font-size:.8rem;color:var(--primary);text-decoration:none;font-weight:600;">
+                        Ver agenda completa <i class="fas fa-arrow-right"></i>
+                    </a>
+                </div>
+            {% else %}
+                <div class="empty-state">
+                    <i class="fas fa-calendar-xmark"></i>
+                    No hay citas programadas por el momento
+                </div>
+            {% endif %}
         </div>
     </div>
 

@@ -815,3 +815,39 @@ body {
     .form-actions .btn-cancel,
     .form-actions .btn-primary { flex: 1; justify-content: center; }
 }
+
+/* ---- BOTONES ACCIONES CITAS (home) ---- */
+.btn-accion {
+    padding: .3rem .75rem;
+    border-radius: 20px;
+    border: none;
+    font-size: .75rem;
+    font-weight: 600;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: .3rem;
+    transition: var(--transition);
+    white-space: nowrap;
+}
+.btn-confirmar {
+    background: #d1f0d4;
+    color: #2e7d32;
+    border: 1px solid #a5d6a7;
+}
+.btn-confirmar:hover { background: #4CAF50; color: white; }
+
+.btn-cancelar {
+    background: #fde8ea;
+    color: var(--danger);
+    border: 1px solid #f5c2c7;
+}
+.btn-cancelar:hover { background: var(--danger); color: white; }
+
+.badge-confirmed { background: #d1f0d4; color: #2e7d32; border: 1px solid #a5d6a7; }
+.badge-cancelled { background: #fde8ea; color: var(--danger); border: 1px solid #f5c2c7; }
+
+@media (max-width: 640px) {
+    .btn-accion span { display: none; }
+    .appt-time .date { font-size: .65rem; }
+}
