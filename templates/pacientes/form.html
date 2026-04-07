@@ -1,0 +1,210 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ titulo }} - FonoApp{% endblock %}
+
+{% block body %}
+
+<nav class="navbar">
+    <a href="{% url 'home' %}" class="navbar-brand">
+        <div class="brand-icon"><i class="fas fa-comments-medical"></i></div>
+        <span class="brand-name">FonoApp</span>
+    </a>
+    <div class="navbar-actions">
+        <div class="navbar-user">
+            <div class="avatar">{{ request.user.first_name|first|upper }}{{ request.user.last_name|first|upper }}</div>
+            <span class="user-name">{{ request.user.get_full_name|default:request.user.username }}</span>
+        </div>
+        <a href="{% url 'logout' %}" class="btn-logout">
+            <i class="fas fa-right-from-bracket"></i><span>Salir</span>
+        </a>
+    </div>
+</nav>
+
+<main class="main-content fade-in">
+
+    <div class="page-header" style="display:flex;align-items:center;gap:1rem;">
+        <a href="{% url 'paciente_lista' %}" class="btn-back">
+            <i class="fas fa-arrow-left"></i>
+        </a>
+        <div>
+            <h2>{{ titulo }}</h2>
+            <p>Complete todos los campos requeridos</p>
+        </div>
+    </div>
+
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags }}">
+                <i class="fas fa-circle-check"></i> {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    <div class="form-card">
+        <form method="post" id="pacienteForm" novalidate>
+            {% csrf_token %}
+
+            <!-- Sección: Datos del paciente -->
+            <div class="form-section">
+                <div class="form-section-title">
+                    <i class="fas fa-user-injured"></i> Datos del Paciente
+                </div>
+
+                <div class="field-row">
+                    <div class="form-group">
+                        <label for="id_nombre">Nombre <span class="required">*</span></label>
+                        <div class="input-wrapper">
+                            <i class="fas fa-user"></i>
+                            <input type="text" name="nombre" id="id_nombre"
+                                class="form-control {% if form.nombre.errors %}is-invalid{% endif %}"
+                                placeholder="Ej: María"
+                                value="{{ form.nombre.value|default:'' }}"
+                                autocomplete="off" required>
+                        </div>
+                        {% if form.nombre.errors %}
+                            <div class="field-error">{{ form.nombre.errors.0 }}</div>
+                        {% endif %}
+                    </div>
+
+                    <div class="form-group">
+                        <label for="id_apellido">Apellido <span class="required">*</span></label>
+                        <div class="input-wrapper">
+                            <i class="fas fa-user"></i>
+                            <input type="text" name="apellido" id="id_apellido"
+                                class="form-control {% if form.apellido.errors %}is-invalid{% endif %}"
+                                placeholder="Ej: González"
+                                value="{{ form.apellido.value|default:'' }}"
+                                autocomplete="off" required>
+                        </div>
+                        {% if form.apellido.errors %}
+                            <div class="field-error">{{ form.apellido.errors.0 }}</div>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div class="field-row">
+                    <div class="form-group">
+                        <label for="id_fecha_nacimiento">Fecha de Nacimiento <span class="required">*</span></label>
+                        <div class="input-wrapper">
+                            <i class="fas fa-calendar-days"></i>
+                            <input type="date" name="fecha_nacimiento" id="id_fecha_nacimiento"
+                                class="form-control {% if form.fecha_nacimiento.errors %}is-invalid{% endif %}"
+                                value="{{ form.fecha_nacimiento.value|default:'' }}"
+                                max="" required>
+                        </div>
+                        {% if form.fecha_nacimiento.errors %}
+                            <div class="field-error">{{ form.fecha_nacimiento.errors.0 }}</div>
+                        {% endif %}
+                    </div>
+
+                    <div class="form-group">
+                        <label>Edad</label>
+                        <div class="edad-display" id="edadDisplay">
+                            <i class="fas fa-birthday-cake"></i>
+                            <span id="edadTexto">Selecciona la fecha de nacimiento</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sección: Datos del acudiente -->
+            <div class="form-section">
+                <div class="form-section-title">
+                    <i class="fas fa-people-roof"></i> Datos del Acudiente
+                </div>
+
+                <div class="field-row">
+                    <div class="form-group" style="flex:2">
+                        <label for="id_nombre_acudiente">Nombre completo <span class="required">*</span></label>
+                        <div class="input-wrapper">
+                            <i class="fas fa-user-tie"></i>
+                            <input type="text" name="nombre_acudiente" id="id_nombre_acudiente"
+                                class="form-control {% if form.nombre_acudiente.errors %}is-invalid{% endif %}"
+                                placeholder="Ej: Carlos Martínez"
+                                value="{{ form.nombre_acudiente.value|default:'' }}"
+                                autocomplete="off" required>
+                        </div>
+                        {% if form.nombre_acudiente.errors %}
+                            <div class="field-error">{{ form.nombre_acudiente.errors.0 }}</div>
+                        {% endif %}
+                    </div>
+
+                    <div class="form-group">
+                        <label for="id_parentesco">Parentesco <span class="required">*</span></label>
+                        <div class="input-wrapper">
+                            <i class="fas fa-heart"></i>
+                            <select name="parentesco" id="id_parentesco"
+                                class="form-control form-select {% if form.parentesco.errors %}is-invalid{% endif %}">
+                                {% for value, label in form.fields.parentesco.choices %}
+                                    <option value="{{ value }}" {% if form.parentesco.value == value %}selected{% endif %}>
+                                        {{ label }}
+                                    </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        {% if form.parentesco.errors %}
+                            <div class="field-error">{{ form.parentesco.errors.0 }}</div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-actions">
+                <a href="{% url 'paciente_lista' %}" class="btn-cancel">
+                    <i class="fas fa-xmark"></i> Cancelar
+                </a>
+                <button type="submit" class="btn-primary" style="width:auto;padding:.75rem 2rem;">
+                    <i class="fas fa-{% if paciente %}floppy-disk{% else %}user-plus{% endif %}"></i>
+                    {% if paciente %}Guardar cambios{% else %}Registrar Paciente{% endif %}
+                </button>
+            </div>
+        </form>
+    </div>
+</main>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+(function () {
+    const fechaInput = document.getElementById('id_fecha_nacimiento');
+    const edadTexto  = document.getElementById('edadTexto');
+
+    // Limitar fecha máxima a hoy
+    const hoy = new Date().toISOString().split('T')[0];
+    fechaInput.setAttribute('max', hoy);
+
+    function calcularEdad(fechaStr) {
+        if (!fechaStr) return null;
+        const nac  = new Date(fechaStr + 'T00:00:00');
+        const hoyD = new Date();
+        let anos  = hoyD.getFullYear() - nac.getFullYear();
+        let meses = hoyD.getMonth() - nac.getMonth();
+        if (hoyD.getDate() < nac.getDate()) meses--;
+        if (meses < 0) { anos--; meses += 12; }
+
+        if (anos < 0) return null;
+        if (anos === 0 && meses === 0) return 'Recién nacido';
+        if (anos === 0) return `${meses} mes${meses !== 1 ? 'es' : ''}`;
+        if (meses === 0) return `${anos} año${anos !== 1 ? 's' : ''}`;
+        return `${anos} año${anos !== 1 ? 's' : ''} y ${meses} mes${meses !== 1 ? 'es' : ''}`;
+    }
+
+    function actualizarEdad() {
+        const edad = calcularEdad(fechaInput.value);
+        if (edad) {
+            edadTexto.textContent = edad;
+            document.getElementById('edadDisplay').classList.add('edad-activa');
+        } else {
+            edadTexto.textContent = 'Selecciona la fecha de nacimiento';
+            document.getElementById('edadDisplay').classList.remove('edad-activa');
+        }
+    }
+
+    fechaInput.addEventListener('change', actualizarEdad);
+    // Calcular si ya hay valor (edición)
+    if (fechaInput.value) actualizarEdad();
+})();
+</script>
+{% endblock %}

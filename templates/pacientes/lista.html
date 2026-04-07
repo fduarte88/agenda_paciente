@@ -1,0 +1,107 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Pacientes - FonoApp{% endblock %}
+
+{% block body %}
+
+<nav class="navbar">
+    <a href="{% url 'home' %}" class="navbar-brand">
+        <div class="brand-icon"><i class="fas fa-comments-medical"></i></div>
+        <span class="brand-name">FonoApp</span>
+    </a>
+    <div class="navbar-actions">
+        <div class="navbar-user">
+            <div class="avatar">{{ request.user.first_name|first|upper }}{{ request.user.last_name|first|upper }}</div>
+            <span class="user-name">{{ request.user.get_full_name|default:request.user.username }}</span>
+        </div>
+        <a href="{% url 'logout' %}" class="btn-logout">
+            <i class="fas fa-right-from-bracket"></i><span>Salir</span>
+        </a>
+    </div>
+</nav>
+
+<main class="main-content fade-in">
+
+    <div class="page-header" style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem;">
+        <div style="display:flex;align-items:center;gap:1rem;">
+            <a href="{% url 'home' %}" class="btn-back"><i class="fas fa-arrow-left"></i></a>
+            <div>
+                <h2>Pacientes</h2>
+                <p>{{ pacientes.count }} paciente{{ pacientes.count|pluralize:"s" }} registrado{{ pacientes.count|pluralize:"s" }}</p>
+            </div>
+        </div>
+        <a href="{% url 'paciente_nuevo' %}" class="btn-primary" style="width:auto;padding:.7rem 1.4rem;text-decoration:none;">
+            <i class="fas fa-user-plus"></i> Nuevo Paciente
+        </a>
+    </div>
+
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags }}">
+                <i class="fas fa-circle-check"></i> {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    <!-- Buscador -->
+    <div class="section-card" style="margin-bottom:1rem;">
+        <div style="padding:1rem 1.25rem;">
+            <form method="get" style="display:flex;gap:.75rem;align-items:center;">
+                <div class="input-wrapper" style="flex:1;">
+                    <i class="fas fa-magnifying-glass"></i>
+                    <input type="text" name="q" class="form-control" placeholder="Buscar por nombre o apellido..."
+                        value="{{ q }}" autocomplete="off">
+                </div>
+                <button type="submit" class="btn-primary" style="width:auto;padding:.72rem 1.2rem;">
+                    <i class="fas fa-search"></i>
+                </button>
+                {% if q %}
+                    <a href="{% url 'paciente_lista' %}" class="btn-cancel" style="white-space:nowrap;">
+                        <i class="fas fa-xmark"></i> Limpiar
+                    </a>
+                {% endif %}
+            </form>
+        </div>
+    </div>
+
+    <!-- Tabla / Lista -->
+    <div class="section-card">
+        {% if pacientes %}
+            <div class="paciente-list">
+                {% for p in pacientes %}
+                <a href="{% url 'paciente_detalle' p.pk %}" class="paciente-item">
+                    <div class="paciente-avatar">
+                        {{ p.nombre|first|upper }}{{ p.apellido|first|upper }}
+                    </div>
+                    <div class="paciente-info">
+                        <div class="paciente-nombre">{{ p.nombre_completo }}</div>
+                        <div class="paciente-meta">
+                            <span><i class="fas fa-cake-candles"></i> {{ p.edad }}</span>
+                            <span><i class="fas fa-user-tie"></i> {{ p.nombre_acudiente }} ({{ p.get_parentesco_display }})</span>
+                        </div>
+                    </div>
+                    <div class="paciente-actions">
+                        <a href="{% url 'paciente_editar' p.pk %}" class="btn-icon" title="Editar"
+                           onclick="event.stopPropagation()">
+                            <i class="fas fa-pen"></i>
+                        </a>
+                        <i class="fas fa-chevron-right text-muted"></i>
+                    </div>
+                </a>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="empty-state">
+                <i class="fas fa-user-slash"></i>
+                {% if q %}
+                    No se encontraron pacientes con "{{ q }}"
+                {% else %}
+                    Aún no hay pacientes registrados
+                {% endif %}
+            </div>
+        {% endif %}
+    </div>
+
+</main>
+{% endblock %}

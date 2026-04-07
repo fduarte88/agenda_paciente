@@ -1,0 +1,134 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Inicio - FonoApp{% endblock %}
+
+{% block body %}
+
+<!-- NAVBAR -->
+<nav class="navbar">
+    <a href="{% url 'home' %}" class="navbar-brand">
+        <div class="brand-icon">
+            <i class="fas fa-comments-medical"></i>
+        </div>
+        <span class="brand-name">FonoApp</span>
+    </a>
+    <div class="navbar-actions">
+        <div class="navbar-user">
+            <div class="avatar">{{ request.user.first_name|first|upper }}{{ request.user.last_name|first|upper }}</div>
+            <span class="user-name">{{ request.user.get_full_name|default:request.user.username }}</span>
+        </div>
+        <a href="{% url 'logout' %}" class="btn-logout">
+            <i class="fas fa-right-from-bracket"></i>
+            <span>Salir</span>
+        </a>
+    </div>
+</nav>
+
+<!-- MAIN CONTENT -->
+<main class="main-content fade-in">
+
+    <div class="page-header">
+        <h2>Bienvenido, {{ request.user.first_name|default:request.user.username }}</h2>
+        <p>Panel de control &mdash; {% now "l, d \d\e F \d\e Y" %}</p>
+    </div>
+
+    <!-- ESTADÍSTICAS -->
+    <div class="stats-grid">
+        <div class="stat-card">
+            <div class="stat-icon blue">
+                <i class="fas fa-calendar-check"></i>
+            </div>
+            <div class="stat-info">
+                <h3>0</h3>
+                <p>Citas hoy</p>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon green">
+                <i class="fas fa-user-group"></i>
+            </div>
+            <div class="stat-info">
+                <h3>0</h3>
+                <p>Pacientes</p>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon orange">
+                <i class="fas fa-clock"></i>
+            </div>
+            <div class="stat-info">
+                <h3>0</h3>
+                <p>Pendientes</p>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon purple">
+                <i class="fas fa-calendar-week"></i>
+            </div>
+            <div class="stat-info">
+                <h3>0</h3>
+                <p>Esta semana</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- ACCESOS RÁPIDOS -->
+    <div class="cards-grid">
+        <a href="#" class="action-card">
+            <div class="action-card-icon primary">
+                <i class="fas fa-calendar-plus"></i>
+            </div>
+            <div class="action-card-body">
+                <h3>Nueva Cita</h3>
+                <p>Agendar una nueva sesión fonoaudiológica para un paciente</p>
+            </div>
+        </a>
+        <a href="{% url 'paciente_nuevo' %}" class="action-card">
+            <div class="action-card-icon success">
+                <i class="fas fa-user-plus"></i>
+            </div>
+            <div class="action-card-body">
+                <h3>Registrar Paciente</h3>
+                <p>Ingresar un nuevo paciente al sistema con su información</p>
+            </div>
+        </a>
+        <a href="#" class="action-card">
+            <div class="action-card-icon accent">
+                <i class="fas fa-calendar-days"></i>
+            </div>
+            <div class="action-card-body">
+                <h3>Ver Agenda</h3>
+                <p>Consultar el calendario de citas programadas</p>
+            </div>
+        </a>
+        <a href="#" class="action-card">
+            <div class="action-card-icon purple">
+                <i class="fas fa-file-medical"></i>
+            </div>
+            <div class="action-card-body">
+                <h3>Historial Clínico</h3>
+                <p>Revisar evoluciones y registros de sesiones anteriores</p>
+            </div>
+        </a>
+    </div>
+
+    <!-- PRÓXIMAS CITAS -->
+    <div class="section-card">
+        <div class="section-card-header">
+            <h3><i class="fas fa-calendar-check"></i> Próximas Citas</h3>
+            <a href="#" class="btn-sm">
+                <i class="fas fa-plus"></i> Nueva
+            </a>
+        </div>
+        <div class="appointment-list">
+            <div class="empty-state">
+                <i class="fas fa-calendar-xmark"></i>
+                No hay citas programadas por el momento
+            </div>
+        </div>
+    </div>
+
+</main>
+
+{% endblock %}
