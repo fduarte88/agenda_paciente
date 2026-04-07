@@ -1,0 +1,151 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ titulo }} - FonoApp{% endblock %}
+
+{% block body %}
+
+<nav class="navbar">
+    <a href="{% url 'home' %}" class="navbar-brand">
+        <div class="brand-icon"><i class="fas fa-comments-medical"></i></div>
+        <span class="brand-name">FonoApp</span>
+    </a>
+    <div class="navbar-actions">
+        <div class="navbar-user">
+            <div class="avatar">{{ request.user.first_name|first|upper }}{{ request.user.last_name|first|upper }}</div>
+            <span class="user-name">{{ request.user.get_full_name|default:request.user.username }}</span>
+        </div>
+        <a href="{% url 'logout' %}" class="btn-logout">
+            <i class="fas fa-right-from-bracket"></i><span>Salir</span>
+        </a>
+    </div>
+</nav>
+
+<main class="main-content fade-in">
+
+    <div class="page-header" style="display:flex;align-items:center;gap:1rem;">
+        <a href="{% url 'agenda' %}" class="btn-back"><i class="fas fa-arrow-left"></i></a>
+        <div>
+            <h2>{{ titulo }}</h2>
+            <p>Complete los datos de la cita</p>
+        </div>
+    </div>
+
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags }}">
+                <i class="fas fa-circle-check"></i> {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    <div class="form-card">
+        <form method="post" novalidate>
+            {% csrf_token %}
+
+            {% if form.non_field_errors %}
+                <div style="padding:1rem 1.5rem 0;">
+                    {% for error in form.non_field_errors %}
+                        <div class="alert alert-danger"><i class="fas fa-circle-exclamation"></i> {{ error }}</div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+
+            <div class="form-section">
+                <div class="form-section-title">
+                    <i class="fas fa-calendar-plus"></i> Datos de la Cita
+                </div>
+
+                <div class="form-group">
+                    <label for="id_paciente">Paciente <span class="required">*</span></label>
+                    <div class="input-wrapper">
+                        <i class="fas fa-user-injured"></i>
+                        <select name="paciente" id="id_paciente"
+                            class="form-control form-select {% if form.paciente.errors %}is-invalid{% endif %}">
+                            <option value="">— Selecciona un paciente —</option>
+                            {% for pk, nombre in form.fields.paciente.choices %}
+                                {% if pk %}
+                                <option value="{{ pk }}" {% if form.paciente.value|stringformat:'s' == pk|stringformat:'s' %}selected{% endif %}>
+                                    {{ nombre }}
+                                </option>
+                                {% endif %}
+                            {% endfor %}
+                        </select>
+                    </div>
+                    {% if form.paciente.errors %}
+                        <div class="field-error">{{ form.paciente.errors.0 }}</div>
+                    {% endif %}
+                </div>
+
+                <div class="field-row">
+                    <div class="form-group">
+                        <label for="id_fecha">Fecha <span class="required">*</span></label>
+                        <div class="input-wrapper">
+                            <i class="fas fa-calendar-days"></i>
+                            <input type="date" name="fecha" id="id_fecha"
+                                class="form-control {% if form.fecha.errors %}is-invalid{% endif %}"
+                                value="{{ form.fecha.value|default:fecha }}" required>
+                        </div>
+                        {% if form.fecha.errors %}
+                            <div class="field-error">{{ form.fecha.errors.0 }}</div>
+                        {% endif %}
+                    </div>
+
+                    <div class="form-group">
+                        <label for="id_hora">Hora <span class="required">*</span></label>
+                        <div class="input-wrapper">
+                            <i class="fas fa-clock"></i>
+                            <select name="hora" id="id_hora"
+                                class="form-control form-select {% if form.hora.errors %}is-invalid{% endif %}">
+                                {% for value, label in form.fields.hora.choices %}
+                                    <option value="{{ value }}"
+                                        {% if form.hora.value == value or hora == value %}selected{% endif %}>
+                                        {{ label }}
+                                    </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        {% if form.hora.errors %}
+                            <div class="field-error">{{ form.hora.errors.0 }}</div>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="id_estado">Estado</label>
+                    <div class="input-wrapper">
+                        <i class="fas fa-circle-dot"></i>
+                        <select name="estado" id="id_estado" class="form-control form-select">
+                            {% for value, label in form.fields.estado.choices %}
+                                <option value="{{ value }}" {% if form.estado.value == value %}selected{% endif %}>
+                                    {{ label }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="id_notas">Notas (opcional)</label>
+                    <div class="input-wrapper" style="align-items:flex-start;">
+                        <i class="fas fa-note-sticky" style="margin-top:.75rem;"></i>
+                        <textarea name="notas" id="id_notas" class="form-control"
+                            placeholder="Observaciones, motivo de consulta..."
+                            style="padding-left:2.75rem;resize:vertical;min-height:80px;">{{ form.notas.value|default:'' }}</textarea>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-actions">
+                <a href="{% url 'agenda' %}" class="btn-cancel">
+                    <i class="fas fa-xmark"></i> Cancelar
+                </a>
+                <button type="submit" class="btn-primary" style="width:auto;padding:.75rem 2rem;">
+                    <i class="fas fa-floppy-disk"></i>
+                    {% if cita %}Guardar cambios{% else %}Agendar Cita{% endif %}
+                </button>
+            </div>
+        </form>
+    </div>
+</main>
+{% endblock %}
