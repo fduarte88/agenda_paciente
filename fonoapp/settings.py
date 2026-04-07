@@ -71,7 +71,11 @@ AUTH_PASSWORD_VALIDATORS = [
 LANGUAGE_CODE = 'es-co'
 TIME_ZONE = 'America/Bogota'
 USE_I18N = True
+USE_L10N = False
 USE_TZ = True
+
+DATE_INPUT_FORMATS = ['%d/%m/%Y', '%Y-%m-%d']
+DATE_FORMAT = 'd/m/Y'
 
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [BASE_DIR / 'static']

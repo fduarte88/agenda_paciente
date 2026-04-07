@@ -1,11 +1,19 @@
 from django import forms
 from .models import Paciente
 
+DATE_WIDGET_ATTRS = {
+    'placeholder': 'dd/mm/aaaa',
+    'autocomplete': 'off',
+    'class': 'date-mask',
+    'maxlength': '10',
+}
+
 
 class PacienteForm(forms.ModelForm):
     fecha_nacimiento = forms.DateField(
-        widget=forms.DateInput(attrs={'type': 'date', 'max': ''}),
+        widget=forms.TextInput(attrs=DATE_WIDGET_ATTRS),
         label='Fecha de nacimiento',
+        input_formats=['%d/%m/%Y', '%Y-%m-%d'],
     )
 
     class Meta:

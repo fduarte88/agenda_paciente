@@ -88,10 +88,11 @@
                         <label for="id_fecha_nacimiento">Fecha de Nacimiento <span class="required">*</span></label>
                         <div class="input-wrapper">
                             <i class="fas fa-calendar-days"></i>
-                            <input type="date" name="fecha_nacimiento" id="id_fecha_nacimiento"
-                                class="form-control {% if form.fecha_nacimiento.errors %}is-invalid{% endif %}"
-                                value="{{ form.fecha_nacimiento.value|default:'' }}"
-                                max="" required>
+                            <input type="text" name="fecha_nacimiento" id="id_fecha_nacimiento"
+                                class="form-control date-mask {% if form.fecha_nacimiento.errors %}is-invalid{% endif %}"
+                                placeholder="dd/mm/aaaa"
+                                value="{{ form.fecha_nacimiento.value|date:'d/m/Y'|default:'' }}"
+                                maxlength="10" autocomplete="off" required>
                         </div>
                         {% if form.fecha_nacimiento.errors %}
                             <div class="field-error">{{ form.fecha_nacimiento.errors.0 }}</div>
@@ -188,20 +189,33 @@
     const fechaInput = document.getElementById('id_fecha_nacimiento');
     const edadTexto  = document.getElementById('edadTexto');
 
-    // Limitar fecha máxima a hoy
-    const hoy = new Date().toISOString().split('T')[0];
-    fechaInput.setAttribute('max', hoy);
+    // Máscara dd/mm/aaaa
+    fechaInput.addEventListener('input', function () {
+        let v = this.value.replace(/\D/g, '').slice(0, 8);
+        if (v.length >= 5)      v = v.slice(0,2) + '/' + v.slice(2,4) + '/' + v.slice(4);
+        else if (v.length >= 3) v = v.slice(0,2) + '/' + v.slice(2);
+        this.value = v;
+        if (v.length === 10) actualizarEdad();
+    });
 
-    function calcularEdad(fechaStr) {
-        if (!fechaStr) return null;
-        const nac  = new Date(fechaStr + 'T00:00:00');
+    // Parsear dd/mm/aaaa → Date
+    function parseFecha(str) {
+        if (!str || str.length < 10) return null;
+        const p = str.split('/');
+        if (p.length !== 3) return null;
+        const d = new Date(`${p[2]}-${p[1]}-${p[0]}T00:00:00`);
+        return isNaN(d) ? null : d;
+    }
+
+    function calcularEdad(str) {
+        const nac = parseFecha(str);
+        if (!nac) return null;
         const hoyD = new Date();
+        if (nac > hoyD) return null;
         let anos  = hoyD.getFullYear() - nac.getFullYear();
         let meses = hoyD.getMonth() - nac.getMonth();
         if (hoyD.getDate() < nac.getDate()) meses--;
         if (meses < 0) { anos--; meses += 12; }
-
-        if (anos < 0) return null;
         if (anos === 0 && meses === 0) return 'Recién nacido';
         if (anos === 0) return `${meses} mes${meses !== 1 ? 'es' : ''}`;
         if (meses === 0) return `${anos} año${anos !== 1 ? 's' : ''}`;
@@ -219,8 +233,7 @@
         }
     }
 
-    fechaInput.addEventListener('change', actualizarEdad);
-    // Calcular si ya hay valor (edición)
+    // Calcular al cargar si ya hay valor (edición)
     if (fechaInput.value) actualizarEdad();
 })();
 </script>

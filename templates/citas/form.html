@@ -82,9 +82,11 @@
                         <label for="id_fecha">Fecha <span class="required">*</span></label>
                         <div class="input-wrapper">
                             <i class="fas fa-calendar-days"></i>
-                            <input type="date" name="fecha" id="id_fecha"
-                                class="form-control {% if form.fecha.errors %}is-invalid{% endif %}"
-                                value="{{ form.fecha.value|default:'' }}" required>
+                            <input type="text" name="fecha" id="id_fecha"
+                                class="form-control date-mask {% if form.fecha.errors %}is-invalid{% endif %}"
+                                placeholder="dd/mm/aaaa"
+                                value="{{ form.fecha.value|date:'d/m/Y'|default:'' }}"
+                                maxlength="10" autocomplete="off" required>
                         </div>
                         {% if form.fecha.errors %}
                             <div class="field-error">{{ form.fecha.errors.0 }}</div>
@@ -148,4 +150,19 @@
         </form>
     </div>
 </main>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+(function () {
+    const fechaInput = document.getElementById('id_fecha');
+    if (!fechaInput) return;
+    fechaInput.addEventListener('input', function () {
+        let v = this.value.replace(/\D/g, '').slice(0, 8);
+        if (v.length >= 5)      v = v.slice(0,2) + '/' + v.slice(2,4) + '/' + v.slice(4);
+        else if (v.length >= 3) v = v.slice(0,2) + '/' + v.slice(2);
+        this.value = v;
+    });
+})();
+</script>
 {% endblock %}
