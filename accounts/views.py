@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
+from pacientes.models import Paciente
 
 
 def login_view(request):
@@ -28,4 +29,5 @@ def logout_view(request):
 
 @login_required
 def home_view(request):
-    return render(request, 'accounts/home.html')
+    total_pacientes = Paciente.objects.count()
+    return render(request, 'accounts/home.html', {'total_pacientes': total_pacientes})

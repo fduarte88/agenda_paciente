@@ -44,15 +44,15 @@
                 <p>Citas hoy</p>
             </div>
         </div>
-        <div class="stat-card">
+        <a href="{% url 'paciente_lista' %}" class="stat-card" style="text-decoration:none;color:inherit;">
             <div class="stat-icon green">
                 <i class="fas fa-user-group"></i>
             </div>
             <div class="stat-info">
-                <h3>0</h3>
+                <h3>{{ total_pacientes }}</h3>
                 <p>Pacientes</p>
             </div>
-        </div>
+        </a>
         <div class="stat-card">
             <div class="stat-icon orange">
                 <i class="fas fa-clock"></i>
