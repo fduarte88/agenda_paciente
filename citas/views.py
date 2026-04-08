@@ -75,6 +75,7 @@ def agenda_semanal(request):
         'semana_siguiente': semana_siguiente,
         'titulo_semana': formato_semana(lunes, sabado),
         'num_semana': lunes.isocalendar()[1],
+        'lunes_hoy': inicio_semana(hoy),
     }
     return render(request, 'citas/agenda.html', context)
 
