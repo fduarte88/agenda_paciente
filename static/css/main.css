@@ -851,3 +851,22 @@ body {
     .btn-accion span { display: none; }
     .appt-time .date { font-size: .65rem; }
 }
+
+/* ---- CUMPLEAÑOS ---- */
+.cumple-hoy {
+    background: linear-gradient(90deg, #fff8f0, #fff);
+    border-left: 3px solid var(--accent);
+}
+.badge-hoy {
+    background: linear-gradient(135deg, var(--accent), #e07a30);
+    color: white;
+    padding: .25rem .7rem;
+    border-radius: 20px;
+    font-size: .75rem;
+    font-weight: 700;
+    animation: pulse-hoy 1.5s ease-in-out infinite;
+}
+@keyframes pulse-hoy {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(244,162,97,.5); }
+    50%       { box-shadow: 0 0 0 6px rgba(244,162,97,0); }
+}

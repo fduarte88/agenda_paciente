@@ -39,8 +39,15 @@ def home_view(request):
         .select_related('paciente')
         .order_by('fecha', 'hora')[:15]
     )
+    # Cumpleaños del mes actual, ordenados por día
+    cumpleanios = (
+        Paciente.objects
+        .filter(fecha_nacimiento__month=hoy.month)
+        .order_by('fecha_nacimiento__day', 'apellido')
+    )
     return render(request, 'accounts/home.html', {
         'total_pacientes': total_pacientes,
         'proximas_citas': proximas_citas,
+        'cumpleanios': cumpleanios,
         'hoy': hoy,
     })

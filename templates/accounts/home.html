@@ -178,6 +178,51 @@
         </div>
     </div>
 
+    <!-- CUMPLEAÑOS DEL MES -->
+    <div class="section-card">
+        <div class="section-card-header">
+            <h3><i class="fas fa-cake-candles"></i> Cumpleaños de {{ hoy|date:"F Y" }}</h3>
+            <span style="font-size:.8rem;color:var(--text-muted);">{{ cumpleanios.count }} paciente{{ cumpleanios.count|pluralize:"s" }}</span>
+        </div>
+        <div class="appointment-list">
+            {% if cumpleanios %}
+                {% for p in cumpleanios %}
+                <div class="appointment-item {% if p.fecha_nacimiento.day == hoy.day %}cumple-hoy{% endif %}">
+                    <div class="appt-time">
+                        <span class="time" style="font-size:1.1rem;">{{ p.fecha_nacimiento|date:"d" }}</span>
+                        <span class="date">{{ hoy|date:"M" }}</span>
+                    </div>
+                    <div class="appt-info">
+                        <div class="patient-name">
+                            {% if p.fecha_nacimiento.day == hoy.day %}
+                                <i class="fas fa-cake-candles" style="color:var(--accent);margin-right:.3rem;"></i>
+                            {% endif %}
+                            {{ p.apellido }}, {{ p.nombre }}
+                        </div>
+                        <div class="service">Cumple {{ p.edad }}</div>
+                    </div>
+                    <div style="flex-shrink:0;">
+                        {% if p.fecha_nacimiento.day == hoy.day %}
+                            <span class="badge badge-hoy">¡Hoy!</span>
+                        {% else %}
+                            <span style="font-size:.8rem;color:var(--text-muted);">
+                                {% if p.fecha_nacimiento.day > hoy.day %}
+                                    en {{ p.fecha_nacimiento.day|add:"-0"|stringformat:"s" }} días
+                                {% endif %}
+                            </span>
+                        {% endif %}
+                    </div>
+                </div>
+                {% endfor %}
+            {% else %}
+                <div class="empty-state">
+                    <i class="fas fa-cake-candles"></i>
+                    No hay cumpleaños este mes
+                </div>
+            {% endif %}
+        </div>
+    </div>
+
 </main>
 
 {% endblock %}
