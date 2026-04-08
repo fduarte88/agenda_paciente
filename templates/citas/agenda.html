@@ -246,12 +246,8 @@
                     <i class="fas fa-chevron-left"></i>
                 </a>
                 <div>
-                    <div class="semana-titulo">
-                        {{ lunes|date:"d" }} — {{ sabado|date:"d" }} de
-                        {% with m=sabado.month %}{{ meses|slice:m|last }}{% endwith %}
-                        {{ sabado|date:"Y" }}
-                    </div>
-                    <div class="semana-sub">Semana {{ lunes|date:"W" }}</div>
+                    <div class="semana-titulo">{{ titulo_semana }}</div>
+                    <div class="semana-sub">Semana {{ num_semana }}</div>
                 </div>
                 <a href="?semana={{ semana_siguiente|date:'Y-m-d' }}" class="btn-nav" title="Semana siguiente">
                     <i class="fas fa-chevron-right"></i>

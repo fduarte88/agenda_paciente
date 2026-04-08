@@ -13,6 +13,16 @@ MESES = [
     'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'
 ]
 
+def formato_semana(lunes, sabado):
+    """Ej: '06 — 11 de abril 2026' o '28 mar — 02 abr 2026' si cruza mes."""
+    if lunes.month == sabado.month:
+        return f'{lunes.day:02d} — {sabado.day:02d} de {MESES[sabado.month]} {sabado.year}'
+    else:
+        return (
+            f'{lunes.day:02d} {MESES[lunes.month][:3]} — '
+            f'{sabado.day:02d} {MESES[sabado.month][:3]} {sabado.year}'
+        )
+
 
 def inicio_semana(fecha):
     return fecha - datetime.timedelta(days=fecha.weekday())
@@ -63,7 +73,8 @@ def agenda_semanal(request):
         'hoy': hoy,
         'semana_anterior': semana_anterior,
         'semana_siguiente': semana_siguiente,
-        'meses': MESES,
+        'titulo_semana': formato_semana(lunes, sabado),
+        'num_semana': lunes.isocalendar()[1],
     }
     return render(request, 'citas/agenda.html', context)
 
