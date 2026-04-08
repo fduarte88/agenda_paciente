@@ -32,7 +32,15 @@ def logout_view(request):
 def home_view(request):
     from django.utils import timezone
     hoy = timezone.localdate()
+    import datetime
+    lunes = hoy - datetime.timedelta(days=hoy.weekday())
+    sabado = lunes + datetime.timedelta(days=5)
+
     total_pacientes = Paciente.objects.count()
+    citas_hoy = Cita.objects.filter(fecha=hoy).exclude(estado='cancelada').count()
+    citas_pendientes = Cita.objects.filter(fecha__gte=hoy, estado='pendiente').count()
+    citas_semana = Cita.objects.filter(fecha__range=(lunes, sabado)).exclude(estado='cancelada').count()
+
     proximas_citas = (
         Cita.objects
         .filter(fecha__gte=hoy)
@@ -53,6 +61,9 @@ def home_view(request):
         cumpleanios.append({'paciente': p, 'dias_falta': dias_falta})
     return render(request, 'accounts/home.html', {
         'total_pacientes': total_pacientes,
+        'citas_hoy': citas_hoy,
+        'citas_pendientes': citas_pendientes,
+        'citas_semana': citas_semana,
         'proximas_citas': proximas_citas,
         'cumpleanios': cumpleanios,
         'total_cumpleanios': len(cumpleanios),
