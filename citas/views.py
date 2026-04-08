@@ -30,7 +30,7 @@ def inicio_semana(fecha):
 
 @login_required
 def agenda_semanal(request):
-    hoy = timezone.now().date()
+    hoy = timezone.localdate()
 
     semana_str = request.GET.get('semana')
     if semana_str:

@@ -31,7 +31,7 @@ def logout_view(request):
 @login_required
 def home_view(request):
     from django.utils import timezone
-    hoy = timezone.now().date()
+    hoy = timezone.localdate()
     total_pacientes = Paciente.objects.count()
     proximas_citas = (
         Cita.objects
