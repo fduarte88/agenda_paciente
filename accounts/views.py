@@ -39,15 +39,22 @@ def home_view(request):
         .select_related('paciente')
         .order_by('fecha', 'hora')[:15]
     )
-    # Cumpleaños del mes actual, ordenados por día
-    cumpleanios = (
+    # Cumpleaños del mes actual, ordenados por día, con días restantes calculados
+    import datetime
+    cumpleanios_qs = (
         Paciente.objects
         .filter(fecha_nacimiento__month=hoy.month)
         .order_by('fecha_nacimiento__day', 'apellido')
     )
+    cumpleanios = []
+    for p in cumpleanios_qs:
+        cumple = datetime.date(hoy.year, hoy.month, p.fecha_nacimiento.day)
+        dias_falta = (cumple - hoy).days
+        cumpleanios.append({'paciente': p, 'dias_falta': dias_falta})
     return render(request, 'accounts/home.html', {
         'total_pacientes': total_pacientes,
         'proximas_citas': proximas_citas,
         'cumpleanios': cumpleanios,
+        'total_cumpleanios': len(cumpleanios),
         'hoy': hoy,
     })
