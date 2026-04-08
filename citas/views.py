@@ -38,7 +38,13 @@ def agenda_semanal(request):
     dias = [lunes + datetime.timedelta(days=i) for i in range(6)]
 
     citas_qs = Cita.objects.filter(fecha__range=(lunes, sabado)).select_related('paciente')
-    citas_map = {(str(c.fecha), c.hora): c for c in citas_qs}
+    # Por slot: priorizar cita activa sobre cancelada
+    citas_map = {}
+    for c in citas_qs:
+        key = (str(c.fecha), c.hora)
+        existente = citas_map.get(key)
+        if existente is None or existente.estado == 'cancelada':
+            citas_map[key] = c
 
     grilla = []
     for hora, _ in HORARIOS:
@@ -108,8 +114,9 @@ def cita_cancelar(request, pk):
     cita = get_object_or_404(Cita, pk=pk)
     semana = inicio_semana(cita.fecha).isoformat()
     next_url = request.POST.get('next', request.GET.get('next', ''))
-    cita.delete()
-    messages.success(request, 'Cita eliminada y turno liberado.')
+    cita.estado = 'cancelada'
+    cita.save()
+    messages.success(request, f'Cita de {cita.paciente} cancelada. El turno queda disponible para reagendar.')
     if next_url:
         return redirect(next_url)
     return redirect(f'/agenda/?semana={semana}')

@@ -29,7 +29,6 @@ class Cita(models.Model):
         verbose_name = 'Cita'
         verbose_name_plural = 'Citas'
         ordering = ['fecha', 'hora']
-        unique_together = ['fecha', 'hora']  # un paciente por franja horaria
 
     def __str__(self):
         return f'{self.fecha} {self.hora} — {self.paciente}'

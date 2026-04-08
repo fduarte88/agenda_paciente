@@ -145,11 +145,11 @@
                                 </button>
                             </form>
                             <form method="post" action="{% url 'cita_cancelar' cita.pk %}" style="margin:0;"
-                                onsubmit="return confirm('¿Eliminar la cita de {{ cita.paciente.nombre }}? El turno quedará libre.')">
+                                onsubmit="return confirm('¿Cancelar la cita de {{ cita.paciente.nombre }}? Quedará marcada como cancelada y el turno podrá reagendarse.')">
                                 {% csrf_token %}
                                 <input type="hidden" name="next" value="{% url 'home' %}">
-                                <button type="submit" class="btn-accion btn-cancelar" title="Cancelar y liberar turno">
-                                    <i class="fas fa-xmark"></i> Cancelar
+                                <button type="submit" class="btn-accion btn-cancelar" title="Cancelar cita">
+                                    <i class="fas fa-ban"></i> Cancelar
                                 </button>
                             </form>
                         {% else %}

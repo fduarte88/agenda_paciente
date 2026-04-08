@@ -87,6 +87,8 @@
 .td-slot:hover { background: #eef6fb; }
 .td-slot.tiene-cita { background: #e8f5e9; cursor: default; }
 .td-slot.tiene-cita:hover { background: #d4edda; }
+.td-slot.cancelada { background: #fff0f0; cursor: default; }
+.td-slot.cancelada:hover { background: #ffe0e0; }
 
 .slot-vacio {
     display: block;
@@ -116,6 +118,8 @@
     font-size: .72rem;
     font-weight: 700;
     color: #2e7d32;
+}
+.slot-nombre.cancelado { color: var(--danger); text-decoration: line-through; }
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -280,31 +284,50 @@
                     <tr>
                         <td class="td-hora">{{ fila.hora }}</td>
                         {% for celda in fila.celdas %}
-                        <td class="td-slot {% if celda.cita %}tiene-cita{% endif %}">
-                            {% if celda.cita %}
-                                <div class="slot-paciente">
-                                    <span class="badge-cita badge-{{ celda.cita.estado }}"></span>
-                                    <span class="slot-nombre" title="{{ celda.cita.paciente.nombre_completo }}">
-                                        {{ celda.cita.paciente.apellido }}, {{ celda.cita.paciente.nombre }}
-                                    </span>
-                                    <div class="slot-acciones">
-                                        <a href="{% url 'cita_editar' celda.cita.pk %}"
-                                           class="btn-slot btn-slot-edit" title="Editar">
-                                            <i class="fas fa-pen"></i>
-                                        </a>
-                                        <a href="{% url 'cita_cancelar' celda.cita.pk %}"
-                                           class="btn-slot btn-slot-del" title="Eliminar"
-                                           onclick="return confirm('¿Eliminar esta cita?')">
-                                            <i class="fas fa-trash"></i>
-                                        </a>
-                                    </div>
+                        {% if celda.cita and celda.cita.estado != 'cancelada' %}
+                        <td class="td-slot tiene-cita">
+                            <div class="slot-paciente">
+                                <span class="badge-cita badge-{{ celda.cita.estado }}"></span>
+                                <span class="slot-nombre" title="{{ celda.cita.paciente.nombre_completo }}">
+                                    {{ celda.cita.paciente.apellido }}, {{ celda.cita.paciente.nombre }}
+                                </span>
+                                <div class="slot-acciones">
+                                    <a href="{% url 'cita_editar' celda.cita.pk %}"
+                                       class="btn-slot btn-slot-edit" title="Editar">
+                                        <i class="fas fa-pen"></i>
+                                    </a>
+                                    <form method="post" action="{% url 'cita_cancelar' celda.cita.pk %}" style="margin:0;">
+                                        {% csrf_token %}
+                                        <button type="submit" class="btn-slot btn-slot-del" title="Cancelar cita"
+                                            onclick="return confirm('¿Cancelar esta cita? Quedará marcada en rojo y el turno estará disponible.')">
+                                            <i class="fas fa-ban"></i>
+                                        </button>
+                                    </form>
                                 </div>
-                            {% else %}
-                                <a class="slot-vacio"
-                                   href="{% url 'cita_nueva' %}?fecha={{ celda.fecha|date:'Y-m-d' }}&hora={{ celda.hora }}">
-                                </a>
-                            {% endif %}
+                            </div>
                         </td>
+                        {% elif celda.cita and celda.cita.estado == 'cancelada' %}
+                        <td class="td-slot cancelada">
+                            <div class="slot-paciente">
+                                <span class="badge-cita badge-cancelada"></span>
+                                <span class="slot-nombre cancelado" title="{{ celda.cita.paciente.nombre_completo }}">
+                                    {{ celda.cita.paciente.apellido }}, {{ celda.cita.paciente.nombre }}
+                                </span>
+                                <div class="slot-acciones">
+                                    <a href="{% url 'cita_nueva' %}?fecha={{ celda.fecha|date:'Y-m-d' }}&hora={{ celda.hora }}"
+                                       class="btn-slot btn-slot-edit" title="Agendar nuevo paciente aquí">
+                                        <i class="fas fa-plus"></i>
+                                    </a>
+                                </div>
+                            </div>
+                        </td>
+                        {% else %}
+                        <td class="td-slot">
+                            <a class="slot-vacio"
+                               href="{% url 'cita_nueva' %}?fecha={{ celda.fecha|date:'Y-m-d' }}&hora={{ celda.hora }}">
+                            </a>
+                        </td>
+                        {% endif %}
                         {% endfor %}
                     </tr>
                     {% endfor %}

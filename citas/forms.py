@@ -54,9 +54,10 @@ class CitaForm(forms.ModelForm):
         fecha = cleaned.get('fecha')
         hora = cleaned.get('hora')
         if fecha and hora:
-            qs = Cita.objects.filter(fecha=fecha, hora=hora)
+            # Solo bloquea si hay una cita activa (no cancelada) en ese turno
+            qs = Cita.objects.filter(fecha=fecha, hora=hora).exclude(estado='cancelada')
             if self.instance.pk:
                 qs = qs.exclude(pk=self.instance.pk)
             if qs.exists():
-                raise forms.ValidationError('Ya existe una cita agendada para ese horario.')
+                raise forms.ValidationError('Ya existe una cita activa en ese horario.')
         return cleaned
