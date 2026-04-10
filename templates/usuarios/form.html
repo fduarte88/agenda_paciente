@@ -155,13 +155,6 @@
 
                         <div class="permiso-grupo">
                             <div class="permiso-titulo"><i class="fas fa-user-injured"></i> Pacientes</div>
-                            {% for campo in 'puede_ver_pacientes,puede_crear_pacientes,puede_editar_pacientes'|split:',' %}
-                            <label class="permiso-item">
-                                <input type="checkbox" name="{{ campo }}"
-                                    {% if form_perfil|getitem:campo %}{% if form_perfil|getitem:campo %}checked{% endif %}{% endif %}>
-                                {{ form_perfil.fields|getitem:campo }}
-                            </label>
-                            {% endfor %}
                             <label class="permiso-item">
                                 <input type="checkbox" name="puede_ver_pacientes"
                                     {% if form_perfil.puede_ver_pacientes.value %}checked{% endif %}>
