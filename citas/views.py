@@ -6,6 +6,7 @@ import datetime
 
 from .models import Cita, HORARIOS
 from .forms import CitaForm
+from usuarios.decorators import permiso_requerido
 
 DIAS_SEMANA = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado']
 MESES = [
@@ -29,6 +30,7 @@ def inicio_semana(fecha):
 
 
 @login_required
+@permiso_requerido('puede_ver_agenda')
 def agenda_semanal(request):
     hoy = timezone.localdate()
 
@@ -81,6 +83,7 @@ def agenda_semanal(request):
 
 
 @login_required
+@permiso_requerido('puede_crear_citas')
 def cita_nueva(request):
     fecha = request.GET.get('fecha', '')
     hora = request.GET.get('hora', '')
@@ -98,6 +101,7 @@ def cita_nueva(request):
 
 
 @login_required
+@permiso_requerido('puede_editar_citas')
 def cita_editar(request, pk):
     cita = get_object_or_404(Cita, pk=pk)
     if request.method == 'POST':
@@ -112,6 +116,7 @@ def cita_editar(request, pk):
 
 
 @login_required
+@permiso_requerido('puede_editar_citas')
 def cita_confirmar(request, pk):
     cita = get_object_or_404(Cita, pk=pk)
     cita.estado = 'confirmada'
@@ -122,6 +127,7 @@ def cita_confirmar(request, pk):
 
 
 @login_required
+@permiso_requerido('puede_cancelar_citas')
 def cita_cancelar(request, pk):
     cita = get_object_or_404(Cita, pk=pk)
     semana = inicio_semana(cita.fecha).isoformat()

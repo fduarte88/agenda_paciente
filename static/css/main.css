@@ -870,3 +870,41 @@ body {
     0%, 100% { box-shadow: 0 0 0 0 rgba(244,162,97,.5); }
     50%       { box-shadow: 0 0 0 6px rgba(244,162,97,0); }
 }
+
+/* ---- USUARIOS / PERMISOS ---- */
+.permiso-grupo {
+    background: var(--bg);
+    border-radius: var(--radius-sm);
+    padding: 1rem;
+    border: 1px solid var(--border);
+}
+.permiso-titulo {
+    font-weight: 700;
+    font-size: .82rem;
+    color: var(--primary);
+    text-transform: uppercase;
+    letter-spacing: .4px;
+    margin-bottom: .75rem;
+    display: flex;
+    align-items: center;
+    gap: .4rem;
+}
+.permiso-item {
+    display: flex;
+    align-items: center;
+    gap: .6rem;
+    font-size: .88rem;
+    padding: .3rem 0;
+    cursor: pointer;
+    color: var(--text);
+}
+.permiso-item input[type=checkbox] {
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
+    accent-color: var(--primary);
+    flex-shrink: 0;
+}
+@media (max-width: 640px) {
+    #permisos-operador > div { grid-template-columns: 1fr; }
+}

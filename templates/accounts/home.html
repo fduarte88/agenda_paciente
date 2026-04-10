@@ -111,6 +111,17 @@
                 <p>Revisar evoluciones y registros de sesiones anteriores</p>
             </div>
         </a>
+        {% if request.user.perfil.puede_ver_usuarios %}
+        <a href="{% url 'usuario_lista' %}" class="action-card">
+            <div class="action-card-icon" style="background:#ede4ff;color:#7c3aed;">
+                <i class="fas fa-users-gear"></i>
+            </div>
+            <div class="action-card-body">
+                <h3>Usuarios</h3>
+                <p>Administrar usuarios y roles del sistema</p>
+            </div>
+        </a>
+        {% endif %}
     </div>
 
     <!-- PRÓXIMAS CITAS -->

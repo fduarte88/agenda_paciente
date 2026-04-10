@@ -1,0 +1,250 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ titulo }} - FonoApp{% endblock %}
+
+{% block body %}
+<nav class="navbar">
+    <a href="{% url 'home' %}" class="navbar-brand">
+        <div class="brand-icon"><i class="fas fa-comments-medical"></i></div>
+        <span class="brand-name">FonoApp</span>
+    </a>
+    <div class="navbar-actions">
+        <div class="navbar-user">
+            <div class="avatar">{{ request.user.first_name|first|upper }}{{ request.user.last_name|first|upper }}</div>
+            <span class="user-name">{{ request.user.get_full_name|default:request.user.username }}</span>
+        </div>
+        <a href="{% url 'logout' %}" class="btn-logout">
+            <i class="fas fa-right-from-bracket"></i><span>Salir</span>
+        </a>
+    </div>
+</nav>
+
+<main class="main-content fade-in">
+    <div class="page-header" style="display:flex;align-items:center;gap:1rem;">
+        <a href="{% url 'usuario_lista' %}" class="btn-back"><i class="fas fa-arrow-left"></i></a>
+        <div>
+            <h2>{{ titulo }}</h2>
+            <p>Complete los datos del usuario</p>
+        </div>
+    </div>
+
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags }}">
+                <i class="fas fa-circle-check"></i> {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    <form method="post" novalidate>
+        {% csrf_token %}
+
+        {% if form_user.non_field_errors or form_perfil.non_field_errors %}
+            <div class="alert alert-danger">
+                <i class="fas fa-circle-exclamation"></i>
+                {{ form_user.non_field_errors.0 }}{{ form_perfil.non_field_errors.0 }}
+            </div>
+        {% endif %}
+
+        <!-- Datos del usuario -->
+        <div class="form-card" style="margin-bottom:1rem;">
+            <div class="form-section">
+                <div class="form-section-title"><i class="fas fa-user"></i> Datos de Acceso</div>
+
+                <div class="field-row">
+                    <div class="form-group">
+                        <label>Nombre <span class="required">*</span></label>
+                        <div class="input-wrapper">
+                            <i class="fas fa-user"></i>
+                            <input type="text" name="first_name" class="form-control"
+                                value="{{ form_user.first_name.value|default:'' }}"
+                                placeholder="Nombre" autocomplete="off">
+                        </div>
+                        {% if form_user.first_name.errors %}<div class="field-error">{{ form_user.first_name.errors.0 }}</div>{% endif %}
+                    </div>
+                    <div class="form-group">
+                        <label>Apellido <span class="required">*</span></label>
+                        <div class="input-wrapper">
+                            <i class="fas fa-user"></i>
+                            <input type="text" name="last_name" class="form-control"
+                                value="{{ form_user.last_name.value|default:'' }}"
+                                placeholder="Apellido" autocomplete="off">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="field-row">
+                    <div class="form-group">
+                        <label>Usuario <span class="required">*</span></label>
+                        <div class="input-wrapper">
+                            <i class="fas fa-at"></i>
+                            <input type="text" name="username" class="form-control"
+                                value="{{ form_user.username.value|default:'' }}"
+                                placeholder="nombre_usuario" autocomplete="off" required>
+                        </div>
+                        {% if form_user.username.errors %}<div class="field-error">{{ form_user.username.errors.0 }}</div>{% endif %}
+                    </div>
+                    <div class="form-group">
+                        <label>Correo electrónico</label>
+                        <div class="input-wrapper">
+                            <i class="fas fa-envelope"></i>
+                            <input type="email" name="email" class="form-control"
+                                value="{{ form_user.email.value|default:'' }}"
+                                placeholder="correo@ejemplo.com">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="field-row">
+                    <div class="form-group">
+                        <label>Contraseña {% if not usuario %}<span class="required">*</span>{% endif %}</label>
+                        <div class="input-wrapper">
+                            <i class="fas fa-lock"></i>
+                            <input type="password" name="password" class="form-control"
+                                placeholder="{% if usuario %}Dejar vacío para no cambiar{% else %}Contraseña{% endif %}">
+                            <button type="button" class="btn-toggle-password"><i class="fas fa-eye"></i></button>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Confirmar contraseña</label>
+                        <div class="input-wrapper">
+                            <i class="fas fa-lock"></i>
+                            <input type="password" name="confirmar_password" class="form-control"
+                                placeholder="Repite la contraseña">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group" style="display:flex;align-items:center;gap:.75rem;margin-top:.5rem;">
+                    <input type="checkbox" name="is_active" id="id_is_active"
+                        {% if form_user.is_active.value %}checked{% endif %}
+                        style="width:18px;height:18px;cursor:pointer;">
+                    <label for="id_is_active" style="margin:0;cursor:pointer;font-weight:600;">
+                        Cuenta activa
+                    </label>
+                </div>
+            </div>
+        </div>
+
+        <!-- Rol y permisos -->
+        <div class="form-card">
+            <div class="form-section">
+                <div class="form-section-title"><i class="fas fa-shield-halved"></i> Rol y Permisos</div>
+
+                <div class="form-group" style="margin-bottom:1.5rem;">
+                    <label>Rol <span class="required">*</span></label>
+                    <div class="input-wrapper">
+                        <i class="fas fa-user-tag"></i>
+                        <select name="rol" id="id_rol" class="form-control form-select">
+                            {% for value, label in form_perfil.fields.rol.choices %}
+                                <option value="{{ value }}" {% if form_perfil.rol.value == value %}selected{% endif %}>
+                                    {{ label }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <p style="font-size:.78rem;color:var(--text-muted);margin-top:.4rem;">
+                        <i class="fas fa-info-circle"></i>
+                        El <strong>Administrador</strong> tiene acceso total. Los permisos abajo aplican solo a <strong>Operadores</strong>.
+                    </p>
+                </div>
+
+                <div id="permisos-operador">
+                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
+
+                        <div class="permiso-grupo">
+                            <div class="permiso-titulo"><i class="fas fa-user-injured"></i> Pacientes</div>
+                            {% for campo in 'puede_ver_pacientes,puede_crear_pacientes,puede_editar_pacientes'|split:',' %}
+                            <label class="permiso-item">
+                                <input type="checkbox" name="{{ campo }}"
+                                    {% if form_perfil|getitem:campo %}{% if form_perfil|getitem:campo %}checked{% endif %}{% endif %}>
+                                {{ form_perfil.fields|getitem:campo }}
+                            </label>
+                            {% endfor %}
+                            <label class="permiso-item">
+                                <input type="checkbox" name="puede_ver_pacientes"
+                                    {% if form_perfil.puede_ver_pacientes.value %}checked{% endif %}>
+                                Ver pacientes
+                            </label>
+                            <label class="permiso-item">
+                                <input type="checkbox" name="puede_crear_pacientes"
+                                    {% if form_perfil.puede_crear_pacientes.value %}checked{% endif %}>
+                                Crear pacientes
+                            </label>
+                            <label class="permiso-item">
+                                <input type="checkbox" name="puede_editar_pacientes"
+                                    {% if form_perfil.puede_editar_pacientes.value %}checked{% endif %}>
+                                Editar pacientes
+                            </label>
+                        </div>
+
+                        <div class="permiso-grupo">
+                            <div class="permiso-titulo"><i class="fas fa-calendar-days"></i> Agenda</div>
+                            <label class="permiso-item">
+                                <input type="checkbox" name="puede_ver_agenda"
+                                    {% if form_perfil.puede_ver_agenda.value %}checked{% endif %}>
+                                Ver agenda
+                            </label>
+                            <label class="permiso-item">
+                                <input type="checkbox" name="puede_crear_citas"
+                                    {% if form_perfil.puede_crear_citas.value %}checked{% endif %}>
+                                Crear citas
+                            </label>
+                            <label class="permiso-item">
+                                <input type="checkbox" name="puede_editar_citas"
+                                    {% if form_perfil.puede_editar_citas.value %}checked{% endif %}>
+                                Editar / confirmar citas
+                            </label>
+                            <label class="permiso-item">
+                                <input type="checkbox" name="puede_cancelar_citas"
+                                    {% if form_perfil.puede_cancelar_citas.value %}checked{% endif %}>
+                                Cancelar citas
+                            </label>
+                        </div>
+
+                        <div class="permiso-grupo">
+                            <div class="permiso-titulo"><i class="fas fa-users"></i> Usuarios</div>
+                            <label class="permiso-item">
+                                <input type="checkbox" name="puede_ver_usuarios"
+                                    {% if form_perfil.puede_ver_usuarios.value %}checked{% endif %}>
+                                Ver usuarios
+                            </label>
+                            <label class="permiso-item">
+                                <input type="checkbox" name="puede_gestionar_usuarios"
+                                    {% if form_perfil.puede_gestionar_usuarios.value %}checked{% endif %}>
+                                Crear / editar usuarios
+                            </label>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-actions">
+                <a href="{% url 'usuario_lista' %}" class="btn-cancel">
+                    <i class="fas fa-xmark"></i> Cancelar
+                </a>
+                <button type="submit" class="btn-primary" style="width:auto;padding:.75rem 2rem;">
+                    <i class="fas fa-floppy-disk"></i>
+                    {% if usuario %}Guardar cambios{% else %}Crear Usuario{% endif %}
+                </button>
+            </div>
+        </div>
+    </form>
+</main>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+// Ocultar/mostrar permisos según rol
+const rolSelect = document.getElementById('id_rol');
+const permisosDiv = document.getElementById('permisos-operador');
+
+function togglePermisos() {
+    permisosDiv.style.display = rolSelect.value === 'admin' ? 'none' : 'block';
+}
+rolSelect.addEventListener('change', togglePermisos);
+togglePermisos();
+</script>
+{% endblock %}

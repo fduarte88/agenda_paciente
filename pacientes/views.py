@@ -3,9 +3,11 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from .models import Paciente
 from .forms import PacienteForm
+from usuarios.decorators import permiso_requerido
 
 
 @login_required
+@permiso_requerido('puede_crear_pacientes')
 def paciente_nuevo(request):
     if request.method == 'POST':
         form = PacienteForm(request.POST)
@@ -19,6 +21,7 @@ def paciente_nuevo(request):
 
 
 @login_required
+@permiso_requerido('puede_ver_pacientes')
 def paciente_lista(request):
     q = request.GET.get('q', '').strip()
     pacientes = Paciente.objects.all()
@@ -33,12 +36,14 @@ def paciente_lista(request):
 
 
 @login_required
+@permiso_requerido('puede_ver_pacientes')
 def paciente_detalle(request, pk):
     paciente = get_object_or_404(Paciente, pk=pk)
     return render(request, 'pacientes/detalle.html', {'paciente': paciente})
 
 
 @login_required
+@permiso_requerido('puede_editar_pacientes')
 def paciente_editar(request, pk):
     paciente = get_object_or_404(Paciente, pk=pk)
     if request.method == 'POST':

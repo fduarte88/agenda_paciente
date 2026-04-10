@@ -1,0 +1,101 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Usuarios - FonoApp{% endblock %}
+
+{% block body %}
+<nav class="navbar">
+    <a href="{% url 'home' %}" class="navbar-brand">
+        <div class="brand-icon"><i class="fas fa-comments-medical"></i></div>
+        <span class="brand-name">FonoApp</span>
+    </a>
+    <div class="navbar-actions">
+        <div class="navbar-user">
+            <div class="avatar">{{ request.user.first_name|first|upper }}{{ request.user.last_name|first|upper }}</div>
+            <span class="user-name">{{ request.user.get_full_name|default:request.user.username }}</span>
+        </div>
+        <a href="{% url 'logout' %}" class="btn-logout">
+            <i class="fas fa-right-from-bracket"></i><span>Salir</span>
+        </a>
+    </div>
+</nav>
+
+<main class="main-content fade-in">
+    <div class="page-header" style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem;">
+        <div style="display:flex;align-items:center;gap:1rem;">
+            <a href="{% url 'home' %}" class="btn-back"><i class="fas fa-arrow-left"></i></a>
+            <div>
+                <h2>Usuarios del Sistema</h2>
+                <p>{{ usuarios.count }} usuario{{ usuarios.count|pluralize:"s" }} registrado{{ usuarios.count|pluralize:"s" }}</p>
+            </div>
+        </div>
+        {% if request.user.perfil.tiene_permiso('puede_gestionar_usuarios') %}
+        <a href="{% url 'usuario_nuevo' %}" class="btn-primary" style="width:auto;padding:.7rem 1.4rem;text-decoration:none;">
+            <i class="fas fa-user-plus"></i> Nuevo Usuario
+        </a>
+        {% endif %}
+    </div>
+
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags }}">
+                <i class="fas fa-circle-check"></i> {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    <div class="section-card">
+        {% if usuarios %}
+        <div class="paciente-list">
+            {% for u in usuarios %}
+            <div class="paciente-item" style="cursor:default;">
+                <div class="paciente-avatar" style="{% if u.perfil.es_admin %}background:linear-gradient(135deg,#7c3aed,#a855f7){% endif %}">
+                    {{ u.first_name|first|upper }}{{ u.last_name|first|upper }}
+                </div>
+                <div class="paciente-info">
+                    <div class="paciente-nombre">
+                        {{ u.get_full_name|default:u.username }}
+                        {% if not u.is_active %}
+                            <span class="badge badge-cancelled" style="font-size:.68rem;margin-left:.4rem;">Inactivo</span>
+                        {% endif %}
+                    </div>
+                    <div class="paciente-meta">
+                        <span>
+                            <i class="fas fa-{% if u.perfil.es_admin %}shield-halved{% else %}user{% endif %}"></i>
+                            {{ u.perfil.get_rol_display }}
+                        </span>
+                        <span><i class="fas fa-at"></i> {{ u.username }}</span>
+                        {% if u.email %}<span><i class="fas fa-envelope"></i> {{ u.email }}</span>{% endif %}
+                    </div>
+                </div>
+                <div class="paciente-actions">
+                    {% if request.user.perfil.tiene_permiso('puede_gestionar_usuarios') %}
+                        {% if u != request.user or request.user.perfil.es_admin %}
+                        <a href="{% url 'usuario_editar' u.pk %}" class="btn-icon" title="Editar">
+                            <i class="fas fa-pen"></i>
+                        </a>
+                        {% endif %}
+                        {% if u != request.user and request.user.perfil.es_admin %}
+                        <form method="post" action="{% url 'usuario_eliminar' u.pk %}" style="margin:0;"
+                            onsubmit="return confirm('¿Eliminar al usuario {{ u.username }}?')">
+                            {% csrf_token %}
+                            <button type="submit" class="btn-icon" title="Eliminar"
+                                style="background:#fde8ea;border-color:#f5c2c7;color:var(--danger);">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </form>
+                        {% endif %}
+                    {% endif %}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+            <div class="empty-state">
+                <i class="fas fa-users-slash"></i>
+                No hay usuarios registrados
+            </div>
+        {% endif %}
+    </div>
+</main>
+{% endblock %}
