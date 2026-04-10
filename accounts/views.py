@@ -67,5 +67,6 @@ def home_view(request):
         'proximas_citas': proximas_citas,
         'cumpleanios': cumpleanios,
         'total_cumpleanios': len(cumpleanios),
+        'puede_ver_usuarios': request.user.perfil.tiene_permiso('puede_ver_usuarios'),
         'hoy': hoy,
     })

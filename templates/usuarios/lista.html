@@ -29,7 +29,7 @@
                 <p>{{ usuarios.count }} usuario{{ usuarios.count|pluralize:"s" }} registrado{{ usuarios.count|pluralize:"s" }}</p>
             </div>
         </div>
-        {% if request.user.perfil.tiene_permiso('puede_gestionar_usuarios') %}
+        {% if request.user.perfil.puede_gestionar_usuarios or request.user.perfil.es_admin %}
         <a href="{% url 'usuario_nuevo' %}" class="btn-primary" style="width:auto;padding:.7rem 1.4rem;text-decoration:none;">
             <i class="fas fa-user-plus"></i> Nuevo Usuario
         </a>
@@ -69,7 +69,7 @@
                     </div>
                 </div>
                 <div class="paciente-actions">
-                    {% if request.user.perfil.tiene_permiso('puede_gestionar_usuarios') %}
+                    {% if request.user.perfil.puede_gestionar_usuarios or request.user.perfil.es_admin %}
                         {% if u != request.user or request.user.perfil.es_admin %}
                         <a href="{% url 'usuario_editar' u.pk %}" class="btn-icon" title="Editar">
                             <i class="fas fa-pen"></i>
