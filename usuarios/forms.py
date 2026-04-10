@@ -48,13 +48,14 @@ class PerfilForm(forms.ModelForm):
     class Meta:
         model = Perfil
         fields = [
-            'rol',
+            'rol', 'genero',
             'puede_ver_pacientes', 'puede_crear_pacientes', 'puede_editar_pacientes',
             'puede_ver_agenda', 'puede_crear_citas', 'puede_editar_citas', 'puede_cancelar_citas',
             'puede_ver_usuarios', 'puede_gestionar_usuarios',
         ]
         labels = {
             'rol': 'Rol',
+            'genero': 'Género',
             'puede_ver_pacientes':      'Ver pacientes',
             'puede_crear_pacientes':    'Crear pacientes',
             'puede_editar_pacientes':   'Editar pacientes',

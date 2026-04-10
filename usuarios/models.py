@@ -10,8 +10,14 @@ class Perfil(models.Model):
         ('operador', 'Operador'),
     ]
 
+    GENERO_CHOICES = [
+        ('M', 'Masculino'),
+        ('F', 'Femenino'),
+    ]
+
     usuario = models.OneToOneField(User, on_delete=models.CASCADE, related_name='perfil')
     rol = models.CharField('Rol', max_length=20, choices=ROL_CHOICES, default='operador')
+    genero = models.CharField('Género', max_length=1, choices=GENERO_CHOICES, default='M')
 
     # Permisos granulares para operadores
     puede_ver_pacientes     = models.BooleanField('Ver pacientes',      default=True)

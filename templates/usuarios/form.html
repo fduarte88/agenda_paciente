@@ -6,7 +6,7 @@
 {% block body %}
 <nav class="navbar">
     <a href="{% url 'home' %}" class="navbar-brand">
-        <div class="brand-icon"><i class="fas fa-comments-medical"></i></div>
+        <div class="brand-icon"><i class="fas fa-user-nurse"></i></div>
         <span class="brand-name">FonoApp</span>
     </a>
     <div class="navbar-actions">
@@ -132,8 +132,22 @@
             <div class="form-section">
                 <div class="form-section-title"><i class="fas fa-shield-halved"></i> Rol y Permisos</div>
 
-                <div class="form-group" style="margin-bottom:1.5rem;">
-                    <label>Rol <span class="required">*</span></label>
+                <div class="field-row" style="margin-bottom:1.5rem;">
+                    <div class="form-group" style="margin-bottom:0;">
+                        <label>Género <span class="required">*</span></label>
+                        <div class="input-wrapper">
+                            <i class="fas fa-venus-mars"></i>
+                            <select name="genero" class="form-control form-select">
+                                {% for value, label in form_perfil.fields.genero.choices %}
+                                    <option value="{{ value }}" {% if form_perfil.genero.value == value %}selected{% endif %}>
+                                        {{ label }}
+                                    </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group" style="margin-bottom:0;">
+                        <label>Rol <span class="required">*</span></label>
                     <div class="input-wrapper">
                         <i class="fas fa-user-tag"></i>
                         <select name="rol" id="id_rol" class="form-control form-select">
@@ -144,10 +158,11 @@
                             {% endfor %}
                         </select>
                     </div>
-                    <p style="font-size:.78rem;color:var(--text-muted);margin-top:.4rem;">
-                        <i class="fas fa-info-circle"></i>
-                        El <strong>Administrador</strong> tiene acceso total. Los permisos abajo aplican solo a <strong>Operadores</strong>.
-                    </p>
+                        <p style="font-size:.78rem;color:var(--text-muted);margin-top:.4rem;">
+                            <i class="fas fa-info-circle"></i>
+                            <strong>Administrador</strong>: acceso total. Los permisos aplican solo a <strong>Operadores</strong>.
+                        </p>
+                    </div>
                 </div>
 
                 <div id="permisos-operador">
