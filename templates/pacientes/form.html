@@ -107,64 +107,162 @@
                         </div>
                     </div>
                 </div>
+
+                <div class="field-row">
+                    <div class="form-group">
+                        <label for="id_escolaridad">Escolaridad</label>
+                        <div class="input-wrapper">
+                            <i class="fas fa-graduation-cap"></i>
+                            <input type="text" name="escolaridad" id="id_escolaridad"
+                                class="form-control {% if form.escolaridad.errors %}is-invalid{% endif %}"
+                                placeholder="Ej: Grado 2°, Preescolar, Jardín..."
+                                value="{{ form.escolaridad.value|default:'' }}"
+                                autocomplete="off">
+                        </div>
+                        {% if form.escolaridad.errors %}
+                            <div class="field-error">{{ form.escolaridad.errors.0 }}</div>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div class="field-row">
+                    <div class="form-group" style="flex:2">
+                        <label for="id_direccion">Dirección</label>
+                        <div class="input-wrapper">
+                            <i class="fas fa-house"></i>
+                            <input type="text" name="direccion" id="id_direccion"
+                                class="form-control {% if form.direccion.errors %}is-invalid{% endif %}"
+                                placeholder="Ej: 14 de mayo, barrio Victoria, Ypacaraí"
+                                value="{{ form.direccion.value|default:'' }}"
+                                autocomplete="off">
+                        </div>
+                        {% if form.direccion.errors %}
+                            <div class="field-error">{{ form.direccion.errors.0 }}</div>
+                        {% endif %}
+                    </div>
+                </div>
             </div>
 
-            <!-- Sección: Datos del acudiente -->
+            <!-- Sección: Datos de los padres -->
             <div class="form-section">
                 <div class="form-section-title">
-                    <i class="fas fa-people-roof"></i> Datos del Acudiente
+                    <i class="fas fa-people-roof"></i> Datos de los Padres
                 </div>
 
+                <!-- Madre -->
                 <div class="field-row">
                     <div class="form-group" style="flex:2">
-                        <label for="id_nombre_acudiente">Nombre completo <span class="required">*</span></label>
+                        <label for="id_nombre_madre">Nombre de la madre</label>
                         <div class="input-wrapper">
-                            <i class="fas fa-user-tie"></i>
-                            <input type="text" name="nombre_acudiente" id="id_nombre_acudiente"
-                                class="form-control {% if form.nombre_acudiente.errors %}is-invalid{% endif %}"
-                                placeholder="Ej: Carlos Martínez"
-                                value="{{ form.nombre_acudiente.value|default:'' }}"
-                                autocomplete="off" required>
+                            <i class="fas fa-user"></i>
+                            <input type="text" name="nombre_madre" id="id_nombre_madre"
+                                class="form-control {% if form.nombre_madre.errors %}is-invalid{% endif %}"
+                                placeholder="Ej: Ana González"
+                                value="{{ form.nombre_madre.value|default:'' }}"
+                                autocomplete="off">
                         </div>
-                        {% if form.nombre_acudiente.errors %}
-                            <div class="field-error">{{ form.nombre_acudiente.errors.0 }}</div>
+                        {% if form.nombre_madre.errors %}
+                            <div class="field-error">{{ form.nombre_madre.errors.0 }}</div>
                         {% endif %}
                     </div>
 
                     <div class="form-group">
-                        <label for="id_parentesco">Parentesco <span class="required">*</span></label>
+                        <label for="id_telefono_madre">Número de contacto</label>
                         <div class="input-wrapper">
-                            <i class="fas fa-heart"></i>
-                            <select name="parentesco" id="id_parentesco"
-                                class="form-control form-select {% if form.parentesco.errors %}is-invalid{% endif %}">
-                                {% for value, label in form.fields.parentesco.choices %}
-                                    <option value="{{ value }}" {% if form.parentesco.value == value %}selected{% endif %}>
-                                        {{ label }}
-                                    </option>
-                                {% endfor %}
-                            </select>
+                            <i class="fas fa-phone"></i>
+                            <input type="tel" name="telefono_madre" id="id_telefono_madre"
+                                class="form-control {% if form.telefono_madre.errors %}is-invalid{% endif %}"
+                                placeholder="Ej: 3001234567"
+                                value="{{ form.telefono_madre.value|default:'' }}"
+                                autocomplete="off">
                         </div>
-                        {% if form.parentesco.errors %}
-                            <div class="field-error">{{ form.parentesco.errors.0 }}</div>
+                        {% if form.telefono_madre.errors %}
+                            <div class="field-error">{{ form.telefono_madre.errors.0 }}</div>
                         {% endif %}
                     </div>
                 </div>
 
+                <!-- Padre -->
                 <div class="field-row">
-                    <div class="form-group">
-                        <label for="id_telefono_acudiente">Teléfono de contacto <span class="required">*</span></label>
+                    <div class="form-group" style="flex:2">
+                        <label for="id_nombre_padre">Nombre del padre</label>
                         <div class="input-wrapper">
-                            <i class="fas fa-phone"></i>
-                            <input type="tel" name="telefono_acudiente" id="id_telefono_acudiente"
-                                class="form-control {% if form.telefono_acudiente.errors %}is-invalid{% endif %}"
-                                placeholder="Ej: 3001234567"
-                                value="{{ form.telefono_acudiente.value|default:'' }}"
-                                autocomplete="off" required>
+                            <i class="fas fa-user"></i>
+                            <input type="text" name="nombre_padre" id="id_nombre_padre"
+                                class="form-control {% if form.nombre_padre.errors %}is-invalid{% endif %}"
+                                placeholder="Ej: Carlos Martínez"
+                                value="{{ form.nombre_padre.value|default:'' }}"
+                                autocomplete="off">
                         </div>
-                        {% if form.telefono_acudiente.errors %}
-                            <div class="field-error">{{ form.telefono_acudiente.errors.0 }}</div>
+                        {% if form.nombre_padre.errors %}
+                            <div class="field-error">{{ form.nombre_padre.errors.0 }}</div>
                         {% endif %}
                     </div>
+
+                    <div class="form-group">
+                        <label for="id_telefono_padre">Número de contacto</label>
+                        <div class="input-wrapper">
+                            <i class="fas fa-phone"></i>
+                            <input type="tel" name="telefono_padre" id="id_telefono_padre"
+                                class="form-control {% if form.telefono_padre.errors %}is-invalid{% endif %}"
+                                placeholder="Ej: 3001234567"
+                                value="{{ form.telefono_padre.value|default:'' }}"
+                                autocomplete="off">
+                        </div>
+                        {% if form.telefono_padre.errors %}
+                            <div class="field-error">{{ form.telefono_padre.errors.0 }}</div>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <!-- Tutor -->
+                <div class="field-row">
+                    <div class="form-group" style="flex:2">
+                        <label for="id_nombre_tutor">Nombre del tutor</label>
+                        <div class="input-wrapper">
+                            <i class="fas fa-user-shield"></i>
+                            <input type="text" name="nombre_tutor" id="id_nombre_tutor"
+                                class="form-control {% if form.nombre_tutor.errors %}is-invalid{% endif %}"
+                                placeholder="Ej: Laura Pérez"
+                                value="{{ form.nombre_tutor.value|default:'' }}"
+                                autocomplete="off">
+                        </div>
+                        {% if form.nombre_tutor.errors %}
+                            <div class="field-error">{{ form.nombre_tutor.errors.0 }}</div>
+                        {% endif %}
+                    </div>
+
+                    <div class="form-group">
+                        <label for="id_telefono_tutor">Número de contacto</label>
+                        <div class="input-wrapper">
+                            <i class="fas fa-phone"></i>
+                            <input type="tel" name="telefono_tutor" id="id_telefono_tutor"
+                                class="form-control {% if form.telefono_tutor.errors %}is-invalid{% endif %}"
+                                placeholder="Ej: 3001234567"
+                                value="{{ form.telefono_tutor.value|default:'' }}"
+                                autocomplete="off">
+                        </div>
+                        {% if form.telefono_tutor.errors %}
+                            <div class="field-error">{{ form.telefono_tutor.errors.0 }}</div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sección: Historial clínico -->
+            <div class="form-section">
+                <div class="form-section-title">
+                    <i class="fas fa-notes-medical"></i> Historial Clínico
+                </div>
+                <div class="form-group">
+                    <label for="id_historial_clinico">Historial clínico</label>
+                    <textarea name="historial_clinico" id="id_historial_clinico" rows="6"
+                        class="form-control {% if form.historial_clinico.errors %}is-invalid{% endif %}"
+                        placeholder="Motivo de consulta, diagnósticos previos, observaciones..."
+                        style="resize:vertical;">{{ form.historial_clinico.value|default:'' }}</textarea>
+                    {% if form.historial_clinico.errors %}
+                        <div class="field-error">{{ form.historial_clinico.errors.0 }}</div>
+                    {% endif %}
                 </div>
             </div>
 

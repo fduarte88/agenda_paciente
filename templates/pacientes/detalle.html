@@ -63,18 +63,47 @@
                 <div class="detalle-valor">{{ paciente.edad }}</div>
             </div>
             <div class="detalle-item">
-                <div class="detalle-label"><i class="fas fa-user-tie"></i> Acudiente</div>
-                <div class="detalle-valor">{{ paciente.nombre_acudiente }}</div>
+                <div class="detalle-label"><i class="fas fa-graduation-cap"></i> Escolaridad</div>
+                <div class="detalle-valor">{{ paciente.escolaridad|default:"—" }}</div>
             </div>
             <div class="detalle-item">
-                <div class="detalle-label"><i class="fas fa-heart"></i> Parentesco</div>
-                <div class="detalle-valor">{{ paciente.get_parentesco_display }}</div>
+                <div class="detalle-label"><i class="fas fa-house"></i> Dirección</div>
+                <div class="detalle-valor">{{ paciente.direccion|default:"—" }}</div>
             </div>
             <div class="detalle-item">
-                <div class="detalle-label"><i class="fas fa-phone"></i> Teléfono de contacto</div>
-                <div class="detalle-valor">{{ paciente.telefono_acudiente }}</div>
+                <div class="detalle-label"><i class="fas fa-user"></i> Madre</div>
+                <div class="detalle-valor">{{ paciente.nombre_madre|default:"—" }}</div>
+            </div>
+            <div class="detalle-item">
+                <div class="detalle-label"><i class="fas fa-phone"></i> Tel. madre</div>
+                <div class="detalle-valor">{{ paciente.telefono_madre|default:"—" }}</div>
+            </div>
+            <div class="detalle-item">
+                <div class="detalle-label"><i class="fas fa-user"></i> Padre</div>
+                <div class="detalle-valor">{{ paciente.nombre_padre|default:"—" }}</div>
+            </div>
+            <div class="detalle-item">
+                <div class="detalle-label"><i class="fas fa-phone"></i> Tel. padre</div>
+                <div class="detalle-valor">{{ paciente.telefono_padre|default:"—" }}</div>
+            </div>
+            <div class="detalle-item">
+                <div class="detalle-label"><i class="fas fa-user-shield"></i> Tutor</div>
+                <div class="detalle-valor">{{ paciente.nombre_tutor|default:"—" }}</div>
+            </div>
+            <div class="detalle-item">
+                <div class="detalle-label"><i class="fas fa-phone"></i> Tel. tutor</div>
+                <div class="detalle-valor">{{ paciente.telefono_tutor|default:"—" }}</div>
             </div>
         </div>
+
+        {% if paciente.historial_clinico %}
+        <div style="margin-top:1.5rem;padding-top:1.5rem;border-top:1px solid var(--border);">
+            <div class="detalle-label" style="margin-bottom:.5rem;">
+                <i class="fas fa-notes-medical"></i> Historial clínico
+            </div>
+            <div style="white-space:pre-wrap;line-height:1.6;color:var(--text);">{{ paciente.historial_clinico }}</div>
+        </div>
+        {% endif %}
     </div>
 
 </main>

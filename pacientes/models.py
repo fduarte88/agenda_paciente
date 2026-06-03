@@ -3,22 +3,18 @@ from django.utils import timezone
 
 
 class Paciente(models.Model):
-    PARENTESCO_CHOICES = [
-        ('padre', 'Padre'),
-        ('madre', 'Madre'),
-        ('tutor', 'Tutor/a'),
-        ('abuelo', 'Abuelo/a'),
-        ('otro', 'Otro'),
-    ]
-
     nombre = models.CharField('Nombre', max_length=100)
     apellido = models.CharField('Apellido', max_length=100)
     fecha_nacimiento = models.DateField('Fecha de nacimiento')
-    nombre_acudiente = models.CharField('Nombre del acudiente', max_length=200)
-    telefono_acudiente = models.CharField('Teléfono de contacto', max_length=20, default='')
-    parentesco = models.CharField(
-        'Parentesco', max_length=20, choices=PARENTESCO_CHOICES, default='madre'
-    )
+    nombre_madre = models.CharField('Nombre de la madre', max_length=200, blank=True, default='')
+    telefono_madre = models.CharField('Teléfono de la madre', max_length=20, blank=True, default='')
+    nombre_padre = models.CharField('Nombre del padre', max_length=200, blank=True, default='')
+    telefono_padre = models.CharField('Teléfono del padre', max_length=20, blank=True, default='')
+    nombre_tutor = models.CharField('Nombre del tutor', max_length=200, blank=True, default='')
+    telefono_tutor = models.CharField('Teléfono del tutor', max_length=20, blank=True, default='')
+    escolaridad = models.CharField('Escolaridad', max_length=100, blank=True, default='')
+    direccion = models.CharField('Dirección', max_length=300, blank=True, default='')
+    historial_clinico = models.TextField('Historial clínico', blank=True, default='')
     creado_en = models.DateTimeField(auto_now_add=True)
     actualizado_en = models.DateTimeField(auto_now=True)
 

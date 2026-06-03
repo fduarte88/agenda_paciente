@@ -44,6 +44,13 @@ def home_view(request):
     proximas_citas = (
         Cita.objects
         .filter(fecha__gte=hoy)
+        .exclude(estado='cancelada')
+        .select_related('paciente')
+        .order_by('fecha', 'hora')[:15]
+    )
+    citas_canceladas = (
+        Cita.objects
+        .filter(fecha__gte=hoy, estado='cancelada')
         .select_related('paciente')
         .order_by('fecha', 'hora')[:15]
     )
@@ -65,6 +72,7 @@ def home_view(request):
         'citas_pendientes': citas_pendientes,
         'citas_semana': citas_semana,
         'proximas_citas': proximas_citas,
+        'citas_canceladas': citas_canceladas,
         'cumpleanios': cumpleanios,
         'total_cumpleanios': len(cumpleanios),
         'puede_ver_usuarios': request.user.perfil.tiene_permiso('puede_ver_usuarios'),

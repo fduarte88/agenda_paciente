@@ -102,15 +102,6 @@
                 <p>Consultar el calendario de citas programadas</p>
             </div>
         </a>
-        <a href="#" class="action-card">
-            <div class="action-card-icon purple">
-                <i class="fas fa-file-medical"></i>
-            </div>
-            <div class="action-card-body">
-                <h3>Historial Clínico</h3>
-                <p>Revisar evoluciones y registros de sesiones anteriores</p>
-            </div>
-        </a>
         {% if puede_ver_usuarios %}
         <a href="{% url 'usuario_lista' %}" class="action-card">
             <div class="action-card-icon" style="background:#ede4ff;color:#7c3aed;">
@@ -124,26 +115,37 @@
         {% endif %}
     </div>
 
-    <!-- PRÓXIMAS CITAS -->
+    <!-- CITAS: pestañas -->
     <div class="section-card">
-        <div class="section-card-header">
-            <h3><i class="fas fa-calendar-check"></i> Próximas Citas</h3>
-            <a href="{% url 'cita_nueva' %}" class="btn-sm">
-                <i class="fas fa-plus"></i> Nueva
-            </a>
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:.85rem 1.25rem .0rem;flex-wrap:wrap;gap:.5rem;">
+            <div style="display:flex;gap:0;border-bottom:2px solid var(--border);width:100%;">
+                <button class="tab-btn active" onclick="switchTab('proximas', this)"
+                    style="padding:.55rem 1.1rem;font-size:.82rem;font-weight:600;border:none;background:none;cursor:pointer;border-bottom:2px solid var(--primary);color:var(--primary);margin-bottom:-2px;">
+                    <i class="fas fa-calendar-check"></i> Próximas
+                    {% if proximas_citas %}<span style="background:var(--primary);color:#fff;border-radius:10px;padding:.05rem .45rem;font-size:.7rem;margin-left:.3rem;">{{ proximas_citas|length }}</span>{% endif %}
+                </button>
+                <button class="tab-btn" onclick="switchTab('canceladas', this)"
+                    style="padding:.55rem 1.1rem;font-size:.82rem;font-weight:600;border:none;background:none;cursor:pointer;border-bottom:2px solid transparent;color:var(--text-muted);margin-bottom:-2px;">
+                    <i class="fas fa-circle-xmark"></i> Canceladas
+                    {% if citas_canceladas %}<span style="background:var(--danger);color:#fff;border-radius:10px;padding:.05rem .45rem;font-size:.7rem;margin-left:.3rem;">{{ citas_canceladas|length }}</span>{% endif %}
+                </button>
+                <div style="flex:1;display:flex;justify-content:flex-end;align-items:center;padding-bottom:.4rem;">
+                    <a href="{% url 'cita_nueva' %}" class="btn-sm"><i class="fas fa-plus"></i> Nueva</a>
+                </div>
+            </div>
         </div>
-        <div class="appointment-list">
+
+        <!-- Tab: Próximas -->
+        <div id="tab-proximas" class="appointment-list">
             {% if proximas_citas %}
                 {% for cita in proximas_citas %}
                 <div class="appointment-item">
                     <div class="appt-time">
                         <span class="time">{{ cita.hora }}</span>
-                        <span class="date">
-                            {% if cita.fecha == hoy %}Hoy{% else %}{{ cita.fecha|date:"d/m/Y" }}{% endif %}
-                        </span>
+                        <span class="date">{% if cita.fecha == hoy %}Hoy{% else %}{{ cita.fecha|date:"d/m/Y" }}{% endif %}</span>
                     </div>
                     <div class="appt-info">
-                        <div class="patient-name">{{ cita.paciente.apellido }}, {{ cita.paciente.nombre }}</div>
+                        <div class="patient-name">{{ cita.paciente.nombre }} {{ cita.paciente.apellido }}</div>
                         <div class="service">{{ cita.fecha|date:"l d/m/Y" }}</div>
                     </div>
                     <div style="display:flex;align-items:center;gap:.5rem;flex-shrink:0;">
@@ -156,20 +158,16 @@
                                 </button>
                             </form>
                             <form method="post" action="{% url 'cita_cancelar' cita.pk %}" style="margin:0;"
-                                onsubmit="return confirm('¿Cancelar la cita de {{ cita.paciente.nombre }}? Quedará marcada como cancelada y el turno podrá reagendarse.')">
+                                onsubmit="return confirm('¿Cancelar la cita de {{ cita.paciente.nombre }}?')">
                                 {% csrf_token %}
                                 <input type="hidden" name="next" value="{% url 'home' %}">
                                 <button type="submit" class="btn-accion btn-cancelar" title="Cancelar cita">
-                                    <i class="fas fa-ban"></i> Cancelar
+                                    <i class="fas fa-xmark"></i> Cancelar
                                 </button>
                             </form>
                         {% else %}
-                            <span class="badge badge-{% if cita.estado == 'confirmada' %}confirmed{% else %}cancelled{% endif %}">
-                                {% if cita.estado == 'confirmada' %}
-                                    <i class="fas fa-circle-check"></i> Confirmada
-                                {% else %}
-                                    <i class="fas fa-circle-xmark"></i> Cancelada
-                                {% endif %}
+                            <span class="badge badge-confirmed">
+                                <i class="fas fa-circle-check"></i> Confirmada
                             </span>
                         {% endif %}
                     </div>
@@ -184,6 +182,40 @@
                 <div class="empty-state">
                     <i class="fas fa-calendar-xmark"></i>
                     No hay citas programadas por el momento
+                </div>
+            {% endif %}
+        </div>
+
+        <!-- Tab: Canceladas -->
+        <div id="tab-canceladas" class="appointment-list" style="display:none;">
+            {% if citas_canceladas %}
+                {% for cita in citas_canceladas %}
+                <div class="appointment-item">
+                    <div class="appt-time">
+                        <span class="time">{{ cita.hora }}</span>
+                        <span class="date">{% if cita.fecha == hoy %}Hoy{% else %}{{ cita.fecha|date:"d/m/Y" }}{% endif %}</span>
+                    </div>
+                    <div class="appt-info">
+                        <div class="patient-name" style="text-decoration:line-through;color:var(--text-muted);">{{ cita.paciente.nombre }} {{ cita.paciente.apellido }}</div>
+                        <div class="service">{{ cita.fecha|date:"l d/m/Y" }}</div>
+                    </div>
+                    <div style="flex-shrink:0;">
+                        <a href="{% url 'cita_nueva' %}?fecha={{ cita.fecha|date:'Y-m-d' }}&hora={{ cita.hora }}"
+                           style="font-size:.78rem;color:var(--primary);text-decoration:none;font-weight:600;">
+                            <i class="fas fa-rotate-left"></i> Reagendar
+                        </a>
+                    </div>
+                </div>
+                {% endfor %}
+                <div style="padding:.6rem 1.25rem;text-align:right;border-top:1px solid var(--border);">
+                    <a href="{% url 'agenda' %}" style="font-size:.8rem;color:var(--primary);text-decoration:none;font-weight:600;">
+                        Ver agenda completa <i class="fas fa-arrow-right"></i>
+                    </a>
+                </div>
+            {% else %}
+                <div class="empty-state">
+                    <i class="fas fa-circle-check"></i>
+                    No hay citas canceladas próximas
                 </div>
             {% endif %}
         </div>
@@ -208,7 +240,7 @@
                             {% if item.dias_falta == 0 %}
                                 <i class="fas fa-cake-candles" style="color:var(--accent);margin-right:.3rem;"></i>
                             {% endif %}
-                            {{ item.paciente.apellido }}, {{ item.paciente.nombre }}
+                            {{ item.paciente.nombre }} {{ item.paciente.apellido }}
                         </div>
                         <div class="service">Cumple {{ item.paciente.edad }}</div>
                     </div>
@@ -234,4 +266,19 @@
 
 </main>
 
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function switchTab(name, btn) {
+    document.querySelectorAll('[id^="tab-"]').forEach(t => t.style.display = 'none');
+    document.querySelectorAll('.tab-btn').forEach(b => {
+        b.style.borderBottomColor = 'transparent';
+        b.style.color = 'var(--text-muted)';
+    });
+    document.getElementById('tab-' + name).style.display = 'block';
+    btn.style.borderBottomColor = 'var(--primary)';
+    btn.style.color = 'var(--primary)';
+}
+</script>
 {% endblock %}
