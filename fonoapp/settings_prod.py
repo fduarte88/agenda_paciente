@@ -1,7 +1,10 @@
-from .settings import *
-from dotenv import load_dotenv
 import os
-load_dotenv(BASE_DIR / '.env')
+from pathlib import Path
+from dotenv import load_dotenv
+
+load_dotenv(Path(__file__).resolve().parent.parent / '.env')
+
+from .settings import *
 
 DEBUG = False
 
